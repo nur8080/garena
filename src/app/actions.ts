@@ -241,9 +241,16 @@ export async function generateReferralLink(): Promise<{ success: boolean; link?:
         if (!user) {
             return { success: false, message: 'User not found.' };
         }
+        
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        if (!baseUrl) {
+            console.error('NEXT_PUBLIC_BASE_URL is not set. Please add it to your .env file.');
+            return { success: false, message: 'Could not generate link. Site configuration is missing.' };
+        }
+
 
         if (user.referralCode) {
-            const link = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'}/?ref=${user.referralCode}`;
+            const link = `${baseUrl}/?ref=${user.referralCode}`;
             return { success: true, link, message: 'Referral link already exists.' };
         }
 
@@ -253,7 +260,7 @@ export async function generateReferralLink(): Promise<{ success: boolean; link?:
             { $set: { referralCode } }
         );
 
-        const link = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'}/?ref=${referralCode}`;
+        const link = `${baseUrl}/?ref=${referralCode}`;
         return { success: true, link, message: 'Referral link generated successfully!' };
 
     } catch (error) {
