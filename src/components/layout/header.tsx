@@ -3,7 +3,12 @@
 import Link from 'next/link';
 import { Flame, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -22,26 +27,31 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 mr-6">
-          <Flame className="h-6 w-6 text-primary" />
-          <span className="font-bold font-headline text-lg">Garena Gears</span>
-        </Link>
-        
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-          {navLinks.map(({ href, label }) => (
-            <Link 
-              key={label} 
-              href={href} 
-              className={cn(
-                "transition-colors hover:text-primary",
-                pathname === href && "text-primary underline decoration-primary underline-offset-4"
-              )}
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
+      <div className="container flex h-16 items-center">
+        <div className="mr-4 flex items-center">
+          <Link href="/" className="flex items-center gap-2 mr-6">
+            <Flame className="h-6 w-6 text-primary" />
+            <span className="font-bold font-headline text-lg">Garena Gears</span>
+          </Link>
+        </div>
+
+        <div className="flex flex-1 items-center justify-end space-x-2">
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            {navLinks.map(({ href, label }) => (
+                <Link
+                key={label}
+                href={href}
+                className={cn(
+                    'transition-colors hover:text-primary',
+                    pathname === href && 'text-primary underline decoration-primary underline-offset-4'
+                )}
+                >
+                {label}
+                </Link>
+            ))}
+            </nav>
+        </div>
+
 
         <div className="flex items-center md:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -54,17 +64,23 @@ export default function Header() {
             <SheetContent side="right">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex flex-col gap-6 pt-10">
-                <Link href="/" className="flex items-center gap-2 mb-4" onClick={() => setIsSheetOpen(false)}>
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 mb-4"
+                  onClick={() => setIsSheetOpen(false)}
+                >
                   <Flame className="h-6 w-6 text-primary" />
-                  <span className="font-bold font-headline text-lg">Garena Gears</span>
+                  <span className="font-bold font-headline text-lg">
+                    Garena Gears
+                  </span>
                 </Link>
                 {navLinks.map(({ href, label }) => (
                   <Link
                     key={label}
                     href={href}
                     className={cn(
-                      "text-lg font-medium transition-colors hover:text-primary",
-                      pathname === href && "text-primary"
+                      'text-lg font-medium transition-colors hover:text-primary',
+                      pathname === href && 'text-primary'
                     )}
                     onClick={() => setIsSheetOpen(false)}
                   >
