@@ -8,7 +8,7 @@ import { ShoppingCart } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
+  { href: '/account', label: 'Account' },
   { href: '/privacy', label: 'Privacy Policy' },
   { href: '/terms', label: 'T&C' },
   { href: '/contact', label: 'Contact' },
@@ -31,7 +31,7 @@ export default function NavigationLinks({ mobile, onLinkClick }: NavigationLinks
             href={href}
             className={cn(
               'text-lg font-medium transition-colors hover:text-primary',
-              pathname === href && 'text-primary underline underline-offset-4 decoration-primary'
+              pathname === href && 'text-primary'
             )}
             onClick={onLinkClick}
           >
@@ -56,12 +56,7 @@ export default function NavigationLinks({ mobile, onLinkClick }: NavigationLinks
           href={href}
           className={cn(
             'transition-colors hover:text-primary',
-            pathname === href && 'text-primary underline underline-offset-4 decoration-primary'
+            pathname === href ? 'text-primary font-semibold border-b-2 border-primary' : ''
           )}
         >
-          {label}
-        </Link>
-      ))}
-    </>
-  );
-}
+          
