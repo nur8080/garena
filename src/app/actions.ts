@@ -12,9 +12,6 @@ import { ensureUserId } from '@/lib/user-actions';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY || 'your-super-secret-jwt-key-that-is-at-least-32-bytes-long';
-const key = new TextEncoder().encode(SECRET_KEY);
-
 export async function askQuestion(
   input: CustomerFAQChatbotInput
 ): Promise<{ success: boolean; answer?: string; error?: string }> {
@@ -400,13 +397,13 @@ export async function submitUtr(orderId: string, utr: string): Promise<{ success
 }
 
 // --- Admin Actions ---
-export async function verifyAdminPassword(prevState: any, formData: FormData): Promise<{message: string}> {
+export async function verifyAdminPassword(prevState: any, formData: FormData): Promise<{message: string, success: boolean}> {
   const password = formData.get('password') as string;
   const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!adminPassword) {
     console.error('ADMIN_PASSWORD environment variable not set.');
-    return { message: 'Admin password not configured.' };
+    return { message: 'Admin password not configured.', success: false };
   }
   
   const isValid = password === adminPassword;
@@ -414,12 +411,10 @@ export async function verifyAdminPassword(prevState: any, formData: FormData): P
   if (isValid) {
     const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     cookies().set('admin_session', 'true', { expires, httpOnly: true, sameSite: 'strict' });
+    return { message: 'Login successful', success: true };
   } else {
-    return { message: 'Incorrect password.' };
+    return { message: 'Incorrect password.', success: false };
   }
-  
-  revalidatePath('/admin');
-  redirect('/admin');
 }
 
 export async function isAdminAuthenticated(): Promise<boolean> {

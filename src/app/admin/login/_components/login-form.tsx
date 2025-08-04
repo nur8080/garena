@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -19,18 +20,26 @@ function SubmitButton() {
 
 export default function LoginForm() {
   const { toast } = useToast();
+  const router = useRouter();
   
-  const [state, formAction] = useActionState(verifyAdminPassword, undefined);
+  const [state, formAction] = useActionState(verifyAdminPassword, { success: false, message: '' });
 
   useEffect(() => {
-    if (state?.message) {
+    if (state?.message && !state.success) {
       toast({
           variant: 'destructive',
           title: 'Login Failed',
           description: state.message
       })
     }
-  }, [state, toast]);
+    if (state?.success) {
+      toast({
+        title: 'Success',
+        description: state.message,
+      });
+      router.push('/admin');
+    }
+  }, [state, toast, router]);
 
 
   return (
