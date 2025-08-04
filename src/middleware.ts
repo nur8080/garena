@@ -37,6 +37,15 @@ export async function middleware(request: NextRequest) {
       }
   }
 
+  // Protect admin pages
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+      const isAdmin = request.cookies.get('admin_session')?.value === 'true';
+      if (!isAdmin) {
+          return NextResponse.redirect(new URL('/admin/login', request.url));
+      }
+  }
+
+
   return response;
 }
 

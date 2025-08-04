@@ -1,7 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import LoginForm from './_components/login-form';
+import { isAdminAuthenticated } from '@/app/actions';
+import { redirect } from 'next/navigation';
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage() {
+  const isAdmin = await isAdminAuthenticated();
+  if (isAdmin) {
+    redirect('/admin');
+  }
+  
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="w-full max-w-md p-4">
