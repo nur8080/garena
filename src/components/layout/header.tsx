@@ -9,7 +9,7 @@ import {
   SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -24,8 +24,11 @@ const navLinks = [
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const pathname = usePathname();
+  const [isOrderPage, setIsOrderPage] = useState(false);
 
-  const isOrderPage = pathname === '/order';
+  useEffect(() => {
+    setIsOrderPage(pathname === '/order');
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
