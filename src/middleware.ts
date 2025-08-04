@@ -29,13 +29,10 @@ export async function middleware(request: NextRequest) {
     });
   }
   
-  // Admin route protection
-  if (pathname.startsWith('/admin')) {
+  // Admin login page redirect if already logged in
+  if (pathname === '/admin/login') {
       const isAdmin = request.cookies.get('admin_session')?.value === 'true';
-      if (!isAdmin && pathname !== '/admin/login') {
-          return NextResponse.redirect(new URL('/admin/login', request.url));
-      }
-      if (isAdmin && pathname === '/admin/login') {
+      if (isAdmin) {
           return NextResponse.redirect(new URL('/admin', request.url));
       }
   }
