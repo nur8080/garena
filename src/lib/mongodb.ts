@@ -8,17 +8,21 @@ if (!MONGODB_URI) {
 }
 
 let cachedClient: MongoClient | null = null;
+let cachedDb: any = null;
 
 export async function connectToDatabase() {
-  if (cachedClient) {
-    return cachedClient.db(MONGODB_DB);
+  if (cachedDb) {
+    return cachedDb;
   }
 
   const client = new MongoClient(MONGODB_URI, {});
-  
+  cachedClient = client;
+
   try {
-      cachedClient = await client.connect();
-      return cachedClient.db(MONGODB_DB);
+      await client.connect();
+      const db = client.db(MONGODB_DB);
+      cachedDb = db;
+      return db;
   } catch (error) {
     console.error("Failed to connect to the database", error);
     throw new Error("Failed to connect to the database");
