@@ -10,7 +10,7 @@ import { requestWithdrawal } from '@/app/actions';
 import { useFormStatus } from 'react-dom';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from '@/components/ui/dialog';
 import type { Withdrawal } from '@/lib/definitions';
 import { Banknote, Loader2, WalletCards } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
