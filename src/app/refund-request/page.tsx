@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function RefundRequestPage() {
   const [transactionId, setTransactionId] = useState('');
   const [message, setMessage] = useState('');
+  const isMobile = useIsMobile();
 
   const handleSendEmail = () => {
     const recipient = 'sm1555524@gmail.com';
@@ -21,8 +23,14 @@ ${transactionId}
 Reason for refund:
 ${message}
     `;
-    const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
+
+    if (isMobile) {
+      const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+    } else {
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(gmailUrl, '_blank');
+    }
   };
 
   return (
