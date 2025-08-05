@@ -48,29 +48,29 @@ export default function CoinSystem({ user }: CoinSystemProps) {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          <Card className="flex flex-col items-center justify-center text-center p-6">
-            <CardHeader>
-                <Tv className="w-12 h-12 mx-auto text-primary" />
-                <CardTitle className="mt-4">Watch & Earn</CardTitle>
-                <CardDescription>Earn coins by watching short ads.</CardDescription>
+          <Card className="flex flex-col items-center justify-center text-center p-4">
+            <CardHeader className="p-2">
+                <Tv className="w-10 h-10 mx-auto text-primary" />
+                <CardTitle className="mt-2 text-lg">Watch & Earn</CardTitle>
+                <CardDescription className="text-xs">Earn coins by watching short ads.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <Button asChild size="lg">
-                    <Link href="/watch-ad" target="_blank">Watch an Ad (Get 5 Coins)</Link>
+            <CardContent className="p-2">
+                <Button asChild>
+                    <Link href="/watch-ad" target="_blank">Watch Ad (+5 Coins)</Link>
                 </Button>
             </CardContent>
           </Card>
 
-          <Card className="flex flex-col items-center justify-center text-center p-6">
-             <CardHeader>
-                <Coins className="w-12 h-12 mx-auto text-amber-500" />
-                <CardTitle className="mt-4">Your Coin Wallet</CardTitle>
-                <CardDescription>You currently have</CardDescription>
+          <Card className="flex flex-col items-center justify-center text-center p-4">
+             <CardHeader className="p-2">
+                <Coins className="w-10 h-10 mx-auto text-amber-500" />
+                <CardTitle className="mt-2 text-lg">Your Coin Wallet</CardTitle>
+                <CardDescription className="text-xs">You currently have</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <p className="text-4xl font-bold">{user.coins}</p>
-                <Button variant="outline" onClick={() => setIsTransferOpen(true)}>
-                    <Send className="mr-2 h-4 w-4" /> Transfer Coins
+            <CardContent className="p-2 space-y-2">
+                <p className="text-3xl font-bold">{user.coins}</p>
+                <Button variant="outline" size="sm" onClick={() => setIsTransferOpen(true)}>
+                    <Send className="mr-2 h-4 w-4" /> Transfer
                 </Button>
             </CardContent>
           </Card>

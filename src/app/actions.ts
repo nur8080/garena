@@ -291,7 +291,7 @@ export async function registerGamingId(gamingId: string): Promise<{ success: boo
 
     if (user) {
       cookies().set('gaming_id', gamingId, { maxAge: 365 * 24 * 60 * 60, httpOnly: true });
-      return { success: true, message: 'Welcome back!', user };
+      return { success: true, message: 'Welcome back!', user: JSON.parse(JSON.stringify(user)) };
     }
 
     const referralCode = cookies().get('referral_code')?.value;
@@ -321,7 +321,7 @@ export async function registerGamingId(gamingId: string): Promise<{ success: boo
     }
 
     revalidatePath('/');
-    return { success: true, message: 'Registration successful! You have been awarded 800 coins.', user: createdUser };
+    return { success: true, message: 'Registration successful! You have been awarded 800 coins.', user: JSON.parse(JSON.stringify(createdUser)) };
   } catch (error) {
     console.error('Error registering Gaming ID:', error);
     return { success: false, message: 'An error occurred during registration.' };
@@ -492,7 +492,7 @@ export async function createRedeemCodeOrder(
 
         // Deduct coins from user
         if (coinsUsed > 0) {
-            await db.collection('users').updateOne({ _id: user._id }, { $inc: { coins: -coinsUsed } });
+            await db.collection('users').updateOne({ _id: new ObjectId(user._id) }, { $inc: { coins: -coinsUsed } });
         }
 
         // Send email notification
@@ -549,7 +549,7 @@ export async function submitUtr(product: Product, gamingId: string, utr: string,
         
         // Deduct coins from user
         if (coinsUsed > 0) {
-            await db.collection('users').updateOne({ _id: user._id }, { $inc: { coins: -coinsUsed } });
+            await db.collection('users').updateOne({ _id: new ObjectId(user._id) }, { $inc: { coins: -coinsUsed } });
         }
 
         revalidatePath('/');
