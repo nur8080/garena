@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Coins, Tv } from 'lucide-react';
 import type { User } from '@/lib/definitions';
@@ -13,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { transferCoins } from '@/app/actions';
 import { useFormStatus } from 'react-dom';
 import GamingIdModal from './gaming-id-modal';
+import { Button } from './ui/button';
 
 interface CoinSystemProps {
   user: User | null;
@@ -33,10 +33,12 @@ export default function CoinSystem({ user }: CoinSystemProps) {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!user) {
-      setIsRegisterModalOpen(true);
+    // If user is not logged in, and modal is not already open, open it.
+    if (!user && !isRegisterModalOpen) {
+      const timer = setTimeout(() => setIsRegisterModalOpen(true), 500); // Small delay
+      return () => clearTimeout(timer);
     }
-  }, [user]);
+  }, [user, isRegisterModalOpen]);
   
   const handleTransfer = async (formData: FormData) => {
     const recipientGamingId = formData.get('recipientId') as string;
@@ -63,15 +65,15 @@ export default function CoinSystem({ user }: CoinSystemProps) {
       <GamingIdModal isOpen={isRegisterModalOpen} onOpenChange={setIsRegisterModalOpen} />
       <section className="w-full py-6 bg-muted/40 border-b">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex justify-center items-center gap-4">
+          <div className="flex justify-center items-stretch gap-4">
             
             <Link 
               href="/watch-ad"
               onClick={handleUnregisteredClick} 
-              className="flex-1 max-w-[120px]"
+              className="flex-1 max-w-[100px] sm:max-w-[120px]"
             >
-              <Card className="hover:bg-primary/5 transition-colors">
-                <CardContent className="p-2 flex flex-col items-center justify-center text-center">
+              <Card className="hover:bg-primary/5 transition-colors h-full">
+                <CardContent className="p-2 flex flex-col items-center justify-center text-center min-h-[80px]">
                     <Tv className="w-5 h-5 mx-auto text-primary" />
                     <p className="font-semibold mt-1 text-xs">Watch Ad</p>
                     <p className="text-xs text-muted-foreground">(+5 Coins)</p>
@@ -81,11 +83,12 @@ export default function CoinSystem({ user }: CoinSystemProps) {
             
             <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
               <DialogTrigger asChild>
-                  <div onClick={handleUnregisteredClick} className="flex-1 max-w-[120px] cursor-pointer">
-                      <Card className="hover:bg-primary/5 transition-colors">
-                        <CardContent className="p-2 flex flex-col items-center justify-center text-center">
+                  <div onClick={handleUnregisteredClick} className="flex-1 max-w-[100px] sm:max-w-[120px] cursor-pointer">
+                      <Card className="hover:bg-primary/5 transition-colors h-full">
+                        <CardContent className="p-2 flex flex-col items-center justify-center text-center min-h-[80px]">
                             <Coins className="w-5 h-5 mx-auto text-amber-500" />
-                            <p className="font-semibold mt-1 text-xs"> {user ? `${user.coins} Coins` : "Your Wallet"}</p>
+                            <p className="font-semibold mt-1 text-xs">{user ? `${user.coins} Coins` : "Your Wallet"}</p>
+                             <p className="text-xs text-muted-foreground">&nbsp;</p>
                         </CardContent>
                       </Card>
                   </div>
