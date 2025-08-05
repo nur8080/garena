@@ -4,7 +4,6 @@ import FaqChatbot from '@/components/faq-chatbot';
 import { getProducts, getUserData } from './actions';
 import { type Metadata } from 'next';
 import { type Product, type User } from '@/lib/definitions';
-import GamingIdModal from '@/components/gaming-id-modal';
 import CoinSystem from '@/components/coin-system';
 
 export const metadata: Metadata = {
@@ -28,7 +27,6 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      {!user && <GamingIdModal />}
       <ImageSlider />
       <CoinSystem user={user} />
       <section className="w-full py-12 md:py-16 lg:py-20 bg-background">
@@ -51,3 +49,5 @@ export default async function Home() {
     </div>
   );
 }
+
+    

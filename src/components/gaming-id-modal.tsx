@@ -10,8 +10,13 @@ import { registerGamingId } from '@/app/actions';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export default function GamingIdModal() {
-  const [isOpen, setIsOpen] = useState(true);
+interface GamingIdModalProps {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+}
+
+
+export default function GamingIdModal({ isOpen, onOpenChange }: GamingIdModalProps) {
   const [gamingId, setGamingId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -29,7 +34,7 @@ export default function GamingIdModal() {
         title: 'Welcome!',
         description: result.message,
       });
-      setIsOpen(false);
+      onOpenChange(false);
       router.refresh(); // Refresh the page to get the new user state
     } else {
       toast({
@@ -42,8 +47,8 @@ export default function GamingIdModal() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && setIsOpen(false)}>
-      <DialogContent className="sm:max-w-md" hideCloseButton={true}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-headline">Welcome to Garena Gears</DialogTitle>
           <DialogDescription>

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Coins, Send, Tv } from 'lucide-react';
+import { Coins, Tv } from 'lucide-react';
 import type { User } from '@/lib/definitions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from './ui/label';
@@ -29,8 +29,18 @@ function SubmitButton() {
 
 export default function CoinSystem({ user }: CoinSystemProps) {
   const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(!user);
   const { toast } = useToast();
+  
+  // Effect to open the modal if the user is not logged in when component mounts.
+  useEffect(() => {
+    if (!user) {
+      setIsRegisterModalOpen(true);
+    } else {
+      setIsRegisterModalOpen(false);
+    }
+  }, [user]);
+
 
   const handleTransfer = async (formData: FormData) => {
     const recipientGamingId = formData.get('recipientId') as string;
@@ -45,69 +55,78 @@ export default function CoinSystem({ user }: CoinSystemProps) {
     }
   }
 
-  const handleUnregisteredClick = () => {
-    setIsRegisterModalOpen(true);
+  const handleUnregisteredClick = (e: React.MouseEvent) => {
+    if (!user) {
+        e.preventDefault();
+        setIsRegisterModalOpen(true);
+    }
   };
   
-  if (isRegisterModalOpen) {
-    return <GamingIdModal />;
-  }
-
   return (
-    <section className="w-full py-6 bg-muted/40 border-b">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex justify-center items-center gap-4">
-          
-          <Link href={user ? "/watch-ad" : "#"} onClick={!user ? handleUnregisteredClick : undefined} target={user ? "_blank" : "_self"} className="flex-1 max-w-xs">
-            <Card className="hover:bg-primary/5 transition-colors">
-              <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                  <Tv className="w-8 h-8 mx-auto text-primary" />
-                  <p className="font-semibold mt-2 text-sm">Watch Ad</p>
-                  <p className="text-xs text-muted-foreground">(+5 Coins)</p>
-              </CardContent>
-            </Card>
-          </Link>
-          
-          <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
-            <DialogTrigger asChild>
-                <div onClick={!user ? handleUnregisteredClick : undefined} className="flex-1 max-w-xs cursor-pointer">
-                    <Card className="hover:bg-primary/5 transition-colors">
-                      <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                          <Coins className="w-8 h-8 mx-auto text-amber-500" />
-                          <p className="font-semibold mt-2 text-sm"> {user ? `${user.coins} Coins` : "Your Wallet"}</p>
-                          <p className="text-xs text-muted-foreground">Click to transfer</p>
-                      </CardContent>
-                    </Card>
-                </div>
-            </DialogTrigger>
+    <>
+      <GamingIdModal isOpen={isRegisterModalOpen} onOpenChange={setIsRegisterModalOpen} />
+      <section className="w-full py-6 bg-muted/40 border-b">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex justify-center items-center gap-4">
+            
+            <Link 
+              href={user ? "/watch-ad" : "#"} 
+              onClick={handleUnregisteredClick} 
+              target={user ? "_blank" : "_self"} 
+              className="flex-1 max-w-[180px]"
+            >
+              <Card className="hover:bg-primary/5 transition-colors">
+                <CardContent className="p-3 flex flex-col items-center justify-center text-center">
+                    <Tv className="w-6 h-6 mx-auto text-primary" />
+                    <p className="font-semibold mt-1 text-xs">Watch Ad</p>
+                    <p className="text-xs text-muted-foreground">(+5 Coins)</p>
+                </CardContent>
+              </Card>
+            </Link>
+            
+            <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
+              <DialogTrigger asChild>
+                  <div onClick={handleUnregisteredClick} className="flex-1 max-w-[180px] cursor-pointer">
+                      <Card className="hover:bg-primary/5 transition-colors">
+                        <CardContent className="p-3 flex flex-col items-center justify-center text-center">
+                            <Coins className="w-6 h-6 mx-auto text-amber-500" />
+                            <p className="font-semibold mt-1 text-xs"> {user ? `${user.coins} Coins` : "Your Wallet"}</p>
+                            <p className="text-xs text-muted-foreground">Click to transfer</p>
+                        </CardContent>
+                      </Card>
+                  </div>
+              </DialogTrigger>
 
-            {user && (
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Transfer Coins</DialogTitle>
-                    <DialogDescription>
-                      Send coins to another user. This action is irreversible. Your current balance is {user.coins}.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form action={handleTransfer} className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="recipientId">Recipient's Gaming ID</Label>
-                      <Input id="recipientId" name="recipientId" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="amount">Amount</Label>
-                      <Input id="amount" name="amount" type="number" required min="1" max={user.coins} />
-                    </div>
-                    <DialogFooter>
-                      <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
-                      <SubmitButton />
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-            )}
-          </Dialog>
+              {user && (
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Transfer Coins</DialogTitle>
+                      <DialogDescription>
+                        Send coins to another user. This action is irreversible. Your current balance is {user.coins}.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form action={handleTransfer} className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="recipientId">Recipient's Gaming ID</Label>
+                        <Input id="recipientId" name="recipientId" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="amount">Amount</Label>
+                        <Input id="amount" name="amount" type="number" required min="1" max={user.coins} />
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                        <SubmitButton />
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+              )}
+            </Dialog>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
+
+    

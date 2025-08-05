@@ -329,7 +329,6 @@ export async function registerGamingId(gamingId: string): Promise<{ success: boo
 }
 
 export async function getUserData(): Promise<User | null> {
-    noStore();
     const gamingId = cookies().get('gaming_id')?.value;
     if (!gamingId) {
         return null;
@@ -1043,3 +1042,5 @@ export async function addCoinsToUser(gamingId: string, amount: number): Promise<
         return { success: false, message: 'An error occurred.' };
     }
 }
+
+    
