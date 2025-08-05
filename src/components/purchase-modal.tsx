@@ -253,7 +253,7 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                         <QrCode value={upiLink('gpay')} size={160} />
                     </div>
                     <div className="text-center">
-                        <p className="font-semibold">Scan to pay ₹{finalPrice}</p>
+                        <p className="font-semibold font-sans">Scan to pay ₹{finalPrice}</p>
                         <p className="text-sm text-muted-foreground">Expires in: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</p>
                     </div>
                     

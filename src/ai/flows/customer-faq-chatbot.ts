@@ -53,6 +53,53 @@ const prompt = ai.definePrompt({
   - Rewarding Referrals: Our referral system rewards you. When you refer someone and they make a purchase, you receive 50% of their top-up amount as a bonus!
 
   ---
+  **How It Works (A Step-by-Step Guide):**
+
+  1.  **Register Your Gaming ID:** The first time you visit, you'll be prompted to enter your Free Fire Gaming ID. This creates a profile for you on our site and you instantly get 800 coins as a welcome bonus!
+  2.  **Earn Coins by Watching Ads:** On the homepage, you will see a "Watch Ad" box. Click it to watch a short ad. For every ad you watch, you earn 5 coins.
+  3.  **Browse and Purchase:** Explore our wide range of items. When you're ready to buy, click the "Buy" button.
+  4.  **Use Coins for Discounts:** During checkout, the maximum applicable coins from your balance will be automatically used to give you a discount on the final price.
+  5.  **Complete Your Purchase:** You can pay the final amount using UPI or a redeem code.
+  6.  **Track Your Order:** You can see the status of all your purchases on the "Order" page.
+
+  ---
+  **Coin System Explained:**
+
+  - **What are Coins?** Coins are a virtual currency on our website that you can use to get discounts on your purchases.
+  - **How to Earn Coins:**
+    - You get **800 coins** for free just for registering your Gaming ID for the first time.
+    - You get **5 coins** for each ad you watch via the "Watch Ad" box on the homepage.
+  - **How to Use Coins:** Coins are applied automatically at checkout. The system will use the maximum number of coins allowed for that specific product to reduce the price you have to pay.
+  - **Transferring Coins:** You can also transfer your coins to a friend by clicking on your coin balance on the homepage.
+  - **Checking Your Balance:** Your current coin balance is always displayed in the "Coin Wallet" box on the homepage.
+
+  ---
+  **Referral Program & Wallet Explained:**
+
+  - **How it Works:**
+    1. Go to the "Account" page and log in or create an account.
+    2. Generate your unique referral link.
+    3. Share this link with your friends.
+  - **Earning Rewards:** When a friend clicks your link, signs up with their Gaming ID, and makes a purchase, you will receive **50% of the actual amount they paid** credited to your account wallet. For example, if they buy an item for ₹100, you get ₹50 in your wallet. This happens after their order is marked as "Completed" by our admin team.
+  - **The Wallet:** Your wallet on the "Account" page holds the cash you've earned from referrals. It is separate from your coin balance. You can withdraw this money to your bank account or via UPI.
+
+  ---
+  **Purchasing and Refund Process:**
+
+  - **How to Purchase:**
+    1. Click "Buy" on an item.
+    2. In the popup, confirm your Gaming ID and the final price (after coin discount).
+    3. Choose your payment method:
+        - **UPI:** Scan the QR code or use a payment app link. After paying, you MUST enter the UTR/Transaction ID to complete the order.
+        - **Redeem Code:** Enter your valid redeem code and submit.
+    4. Your order will go into "Processing" status. Once verified by our team, it will be marked "Completed".
+  - **How to Request a Refund:**
+    1. Go to the "Order" page.
+    2. Click the "Request a Refund" button.
+    3. This will open a pre-filled email template. Fill in your transaction details and the reason for your request.
+    4. Our team will review your request. All refunds are subject to our terms and conditions.
+
+  ---
   **Terms & Conditions Context:**
 
   - Accounts: Users must provide accurate and current information. Users are responsible for safeguarding their passwords.

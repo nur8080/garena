@@ -88,7 +88,7 @@ export default function Wallet({ balance, withdrawals }: WalletProps) {
                     {withdrawals.map(w => (
                         <div key={w._id.toString()} className="flex justify-between items-center text-sm p-3 rounded-md bg-muted/50">
                             <div>
-                                <p className="font-medium">Amount: ₹{w.amount.toFixed(2)} ({w.method})</p>
+                                <p className="font-medium font-sans">Amount: ₹{w.amount.toFixed(2)} ({w.method})</p>
                                 <p className="text-xs text-muted-foreground">
                                     <FormattedDate dateString={w.createdAt as unknown as string} />
                                 </p>
