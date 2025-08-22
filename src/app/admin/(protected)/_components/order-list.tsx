@@ -32,6 +32,7 @@ interface OrderListProps {
     title: string;
     showActions?: boolean;
     initialHasMore: boolean;
+    totalOrders?: number;
 }
 
 const FormattedDate = ({ dateString }: { dateString: string }) => {
@@ -46,7 +47,7 @@ const FormattedDate = ({ dateString }: { dateString: string }) => {
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
-export function OrderList({ initialOrders, status, title, showActions = false, initialHasMore }: OrderListProps) {
+export function OrderList({ initialOrders, status, title, showActions = false, initialHasMore, totalOrders }: OrderListProps) {
     const [orders, setOrders] = useState<ClientOrder[]>(initialOrders);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(initialHasMore);
@@ -110,7 +111,12 @@ export function OrderList({ initialOrders, status, title, showActions = false, i
             <Card>
                 <CardHeader>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <CardTitle>{title}</CardTitle>
+                        <div className="flex items-center gap-2">
+                           <CardTitle>{title}</CardTitle>
+                            {totalOrders !== undefined && (
+                                <Badge variant="secondary" className="text-sm">{totalOrders}</Badge>
+                            )}
+                        </div>
                         <div className="flex items-center gap-2">
                             <form onSubmit={handleSearch} className="flex items-center gap-2">
                                 <Input name="search" placeholder="Search by Gaming/Referral ID..." defaultValue={searchParams.get('search') || ''} className="w-56"/>

@@ -128,7 +128,7 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
         prefill: {
             name: user.gamingId,
             email: "support@garenagears.com",
-            contact: "+919898989898"
+            contact: ""
         },
         theme: {
             color: "#F97316"

@@ -12,7 +12,7 @@ export default async function AdminHomePage({
   const sort = typeof searchParams.sort === 'string' ? searchParams.sort : 'asc';
   const search = typeof searchParams.search === 'string' ? searchParams.search : '';
 
-  const { orders, hasMore } = await getOrdersForAdmin(page, sort, search, status);
+  const { orders, hasMore, totalOrders } = await getOrdersForAdmin(page, sort, search, status);
 
   return (
     <OrderList
@@ -21,6 +21,7 @@ export default async function AdminHomePage({
       status={status}
       showActions={true}
       initialHasMore={hasMore}
+      totalOrders={totalOrders}
     />
   );
 }

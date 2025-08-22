@@ -702,7 +702,7 @@ export async function getOrdersForAdmin(
 
   const orders = JSON.parse(JSON.stringify(ordersFromDb));
 
-  return { orders, hasMore };
+  return { orders, hasMore, totalOrders };
 }
 
 export async function getLegacyUsersForAdmin(page: number, sort: string, search: string) {
