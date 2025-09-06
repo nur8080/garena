@@ -10,6 +10,7 @@
 
 
 
+
 'use server';
 
 import { customerFAQChatbot, type CustomerFAQChatbotInput } from '@/ai/flows/customer-faq-chatbot';
@@ -26,6 +27,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { sendRedeemCodeNotification } from '@/lib/email';
 import { ObjectId } from 'mongodb';
 import Razorpay from 'razorpay';
+import { adminMessaging } from '@/lib/firebase';
 
 
 const key = new TextEncoder().encode(process.env.SESSION_SECRET || 'your-fallback-secret-for-session');
@@ -1460,6 +1462,29 @@ export async function sendNotification(formData: FormData): Promise<{ success: b
 
     await db.collection<Notification>('notifications').insertOne(newNotification as Notification);
 
+    // Send push notification if user has a token
+    if (user.fcmToken) {
+        try {
+            await adminMessaging.send({
+                token: user.fcmToken,
+                notification: {
+                    title: 'Garena Gears',
+                    body: message,
+                    imageUrl: imageUrl || undefined,
+                },
+                webpush: {
+                    fcmOptions: {
+                        link: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Failed to send push notification:', error);
+            // Don't fail the whole action if push notification fails
+        }
+    }
+
+
     revalidatePath('/'); // Revalidate to show notification icon in header
     return { success: true, message: 'Notification sent successfully!' };
 }
@@ -1486,7 +1511,7 @@ export async function sendNotificationToAll(formData: FormData): Promise<{ succe
 
     const db = await connectToDatabase();
     // Find all users who are not banned or hidden
-    const allUsers = await db.collection<User>('users').find({ isBanned: { $ne: true }, isHidden: { $ne: true } }).project({ gamingId: 1 }).toArray();
+    const allUsers = await db.collection<User>('users').find({ isBanned: { $ne: true }, isHidden: { $ne: true } }).project({ gamingId: 1, fcmToken: 1 }).toArray();
 
     if (allUsers.length === 0) {
         return { success: false, message: 'No active users found to send notifications to.' };
@@ -1502,6 +1527,29 @@ export async function sendNotificationToAll(formData: FormData): Promise<{ succe
     }));
 
     await db.collection<Notification>('notifications').insertMany(notifications as Notification[]);
+
+    // Send push notifications
+    const tokens = allUsers.map(u => u.fcmToken).filter((t): t is string => !!t);
+    if (tokens.length > 0) {
+        try {
+            await adminMessaging.sendEachForMulticast({
+                tokens,
+                notification: {
+                    title: 'Garena Gears',
+                    body: message,
+                    imageUrl: imageUrl || undefined,
+                },
+                 webpush: {
+                    fcmOptions: {
+                        link: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error sending multicast push notifications:', error);
+        }
+    }
+
 
     revalidatePath('/');
     return { success: true, message: `Notification sent to ${allUsers.length} users.` };
@@ -1608,4 +1656,24 @@ export async function deleteEvent(eventId: string): Promise<{ success: boolean; 
     revalidatePath('/');
 
     return { success: true, message: 'Event deleted.' };
+}
+
+// --- Push Notification Actions ---
+export async function saveFcmToken(token: string): Promise<{ success: boolean }> {
+  const gamingId = cookies().get('gaming_id')?.value;
+  if (!gamingId) {
+    return { success: false };
+  }
+
+  try {
+    const db = await connectToDatabase();
+    await db.collection<User>('users').updateOne(
+      { gamingId },
+      { $set: { fcmToken: token } }
+    );
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to save FCM token:', error);
+    return { success: false };
+  }
 }

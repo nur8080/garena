@@ -11,6 +11,7 @@ import { getEvents, getNotificationsForUser, getUserData, markNotificationAsRead
 import type { Event, Notification, User } from '@/lib/definitions';
 import PopupNotification from '@/components/popup-notification';
 import EventModal from '@/components/event-modal';
+import FirebaseMessagingProvider from '@/components/firebase-messaging-provider';
 
 
 export default function RootLayout({
@@ -83,24 +84,27 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
-        {isLoading && <LoadingScreen />}
-        <div className={cn(isLoading ? 'hidden' : 'flex flex-col flex-1')}>
-          <Header user={user} notifications={standardNotifications} />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
-        <Toaster />
-        {popupNotifications.length > 0 && (
-          <PopupNotification
-            notification={popupNotifications[0]}
-            onClose={() => handlePopupClose(popupNotifications[0]._id.toString())}
-          />
-        )}
-        {showEventModal && events.length > 0 && (
-            <EventModal event={events[currentEventIndex]} onClose={handleEventClose} />
-        )}
+        <FirebaseMessagingProvider>
+          {isLoading && <LoadingScreen />}
+          <div className={cn(isLoading ? 'hidden' : 'flex flex-col flex-1')}>
+            <Header user={user} notifications={standardNotifications} />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+          <Toaster />
+          {popupNotifications.length > 0 && (
+            <PopupNotification
+              notification={popupNotifications[0]}
+              onClose={() => handlePopupClose(popupNotifications[0]._id.toString())}
+            />
+          )}
+          {showEventModal && events.length > 0 && (
+              <EventModal event={events[currentEventIndex]} onClose={handleEventClose} />
+          )}
+        </FirebaseMessagingProvider>
       </body>
     </html>
   );

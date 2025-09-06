@@ -28,6 +28,7 @@ export interface User {
     banMessage?: string; // A message to show the user when they are banned
     visits?: Date[];
     isHidden?: boolean; // Flag to hide user from admin list
+    fcmToken?: string; // Firebase Cloud Messaging token
 }
 
 
