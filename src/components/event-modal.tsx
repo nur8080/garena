@@ -3,7 +3,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Event } from '@/lib/definitions';
 import Image from 'next/image';
-import { X } from 'lucide-react';
 
 interface EventModalProps {
   event: Event;
@@ -13,16 +12,12 @@ interface EventModalProps {
 export default function EventModal({ event, onClose }: EventModalProps) {
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="p-0 border-0 max-w-2xl bg-transparent shadow-none" hideCloseButton={true}>
+      <DialogContent className="p-2 sm:p-4 max-w-2xl">
         <DialogHeader>
             <DialogTitle className="sr-only">Promotional Event</DialogTitle>
         </DialogHeader>
         <div className="relative aspect-video">
-            <Image src={event.imageUrl} alt="Event" layout="fill" className="object-contain" />
-             <button onClick={onClose} className="absolute z-10 top-2 right-2 rounded-full bg-black/50 p-1 text-white opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-              <X className="h-5 w-5" />
-              <span className="sr-only">Close</span>
-            </button>
+            <Image src={event.imageUrl} alt="Event" layout="fill" className="object-contain rounded-md" />
         </div>
       </DialogContent>
     </Dialog>
