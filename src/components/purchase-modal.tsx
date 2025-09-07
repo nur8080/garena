@@ -75,12 +75,11 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     const result = await registerAction(gamingId);
     if (result.success && result.user) {
         toast({ title: 'Success', description: result.message });
-        setUser(result.user);
-        setStep('details');
+        window.location.reload();
     } else {
         toast({ variant: 'destructive', title: 'Error', description: result.message });
+        setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const coinsToUse = user && !product.isCoinProduct ? Math.min(user.coins, product.coinsApplicable || 0) : 0;
@@ -331,3 +330,5 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     </>
   );
 }
+
+    
