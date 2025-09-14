@@ -285,3 +285,5 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     </Dialog>
   );
 }
+
+    
