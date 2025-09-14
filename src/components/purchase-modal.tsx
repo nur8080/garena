@@ -4,14 +4,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Script from 'next/script';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { Product, User } from '@/lib/definitions';
-import { Loader2, X, ShieldCheck, Smartphone, Globe, Coins, QrCode } from 'lucide-react';
+import { Loader2, X, Smartphone, Globe, Coins } from 'lucide-react';
 import Image from 'next/image';
 import { createRedeemCodeOrder, registerGamingId as registerAction, createRazorpayOrder } from '@/app/actions';
 import {
@@ -254,8 +253,8 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                 </DialogHeader>
                 <div className="flex flex-col items-center justify-center space-y-4 py-4">
                     <p className="text-3xl font-bold text-primary font-sans">Pay: ₹{finalPrice}</p>
-                    <div className="p-4 bg-white rounded-lg border">
-                         <Image src={paymentDetails.qrImageUrl} alt="UPI QR Code" width={200} height={200} />
+                    <div className="p-4 bg-white rounded-lg border w-52 h-52 relative overflow-hidden">
+                         <Image src={paymentDetails.qrImageUrl} alt="UPI QR Code" layout="fill" className="object-cover" objectPosition="top"/>
                     </div>
                     <p className="text-sm text-muted-foreground">Waiting for payment confirmation...</p>
                     <div className="w-full border-t pt-4">
@@ -285,5 +284,3 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     </Dialog>
   );
 }
-
-    
