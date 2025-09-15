@@ -14,6 +14,7 @@
 
 
 
+
 'use server';
 
 import { customerFAQChatbot, type CustomerFAQChatbotInput } from '@/ai/flows/customer-faq-chatbot';
@@ -646,6 +647,12 @@ export async function createRazorpayOrder(amount: number, gamingId: string, prod
         key_secret: process.env.RAZORPAY_KEY_SECRET || '',
     });
 
+    const db = await connectToDatabase();
+    const product = await db.collection<Product>('products').findOne({ _id: new ObjectId(productId) });
+    if (!product) {
+        return { success: false, error: 'Product not found.' };
+    }
+
     const notes = {
         gamingId: gamingId,
         productId: productId,
@@ -661,7 +668,7 @@ export async function createRazorpayOrder(amount: number, gamingId: string, prod
 
         const qrPromise = razorpay.qrCode.create({
             type: "upi_qr",
-            name: `Garena: ${productId}`,
+            name: `Garena: ${product.name}`,
             usage: "single_use",
             fixed_amount: true,
             payment_amount: amount * 100,
@@ -673,7 +680,7 @@ export async function createRazorpayOrder(amount: number, gamingId: string, prod
             amount: amount * 100,
             currency: "INR",
             upi_link: true,
-            description: `Purchase for Gaming ID: ${gamingId}`,
+            description: `Purchase for: ${product.name}`,
             notes: notes,
             callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
             callback_method: 'get'
@@ -1953,6 +1960,7 @@ export async function getDisabledRedeemUsers(search: string, page: number) {
         return { users: [], hasMore: false, totalUsers: 0 };
     }
 }
+
 
 
 
