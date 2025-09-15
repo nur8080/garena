@@ -13,6 +13,7 @@
 
 
 
+
 'use server';
 
 import { customerFAQChatbot, type CustomerFAQChatbotInput } from '@/ai/flows/customer-faq-chatbot';
@@ -1769,10 +1770,12 @@ export async function setUserRedeemDisabled(gamingId: string, disabled: boolean)
 
     try {
         const db = await connectToDatabase();
-        const result = await db.collection<User>('users').updateOne(
-            { gamingId },
-            { $set: { isRedeemDisabled: disabled } }
-        );
+        const update = disabled 
+            ? { $set: { isRedeemDisabled: true, redeemDisabledAt: new Date() } }
+            : { $set: { isRedeemDisabled: false }, $unset: { redeemDisabledAt: "" } };
+        
+        const result = await db.collection<User>('users').updateOne({ gamingId }, update);
+
 
         if (result.modifiedCount === 0 && result.matchedCount === 0) {
             return { success: false, message: 'User not found.' };
@@ -1934,7 +1937,7 @@ export async function getDisabledRedeemUsers(search: string, page: number) {
 
         const usersFromDb = await db.collection<User>('users')
             .find(query)
-            .sort({ gamingId: 1 })
+            .sort({ redeemDisabledAt: -1 })
             .skip(skip)
             .limit(DISABLED_REDEEM_PAGE_SIZE)
             .toArray();
@@ -1950,6 +1953,7 @@ export async function getDisabledRedeemUsers(search: string, page: number) {
         return { users: [], hasMore: false, totalUsers: 0 };
     }
 }
+
 
 
 
