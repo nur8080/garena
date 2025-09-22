@@ -222,8 +222,8 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                 </DialogHeader>
                 <div className="flex flex-col items-center justify-center text-center space-y-4 py-8">
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
-                    <h2 className="text-xl font-semibold">Verifying Eligibility...</h2>
-                    <p className="text-muted-foreground">Please wait while we check if you can purchase this item.</p>
+                    <h2 className="text-xl font-semibold"></h2>
+                    <p className="text-muted-foreground"></p>
                 </div>
             </>
         );
