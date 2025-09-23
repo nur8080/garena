@@ -1,8 +1,7 @@
 
-
 'use client';
 
-import { useState, useEffect, useActionState, useTransition } from 'react';
+import { useState, useEffect, useActionState, useTransition, useCallback } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from './ui/card';
 import { Coins, Tv, Shield, KeyRound, Loader2, Send, AlertCircle, RefreshCw, History } from 'lucide-react';
@@ -18,6 +17,7 @@ import { Button } from './ui/button';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { PasswordInput } from '@/app/account/_components/password-input';
 import { ScrollArea } from './ui/scroll-area';
+import { useRefresh } from '@/context/RefreshContext';
 
 
 interface CoinSystemProps {
@@ -76,18 +76,26 @@ export default function CoinSystem({ user: initialUser }: CoinSystemProps) {
   const [isHistoryLoading, startHistoryTransition] = useTransition();
   const [view, setView] = useState<View>('transfer');
   const { toast } = useToast();
+  const { refreshKey } = useRefresh();
 
   const [setPasswordState, setPasswordFormAction] = useActionState(setGiftPassword, initialState);
   const [transferState, transferFormAction] = useActionState(transferCoins, initialState);
   
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const updatedUser = await getUserData();
-      setCurrentUser(updatedUser);
-    }, 3000); // Poll every 3 seconds
-
-    return () => clearInterval(interval);
+  const fetchUserData = useCallback(async () => {
+    const updatedUser = await getUserData();
+    setCurrentUser(updatedUser);
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(fetchUserData, 3000); // Poll every 3 seconds
+    return () => clearInterval(interval);
+  }, [fetchUserData]);
+
+  useEffect(() => {
+    if (refreshKey > 0) {
+      fetchUserData();
+    }
+  }, [refreshKey, fetchUserData]);
 
   useEffect(() => {
     if (currentUser?.giftPassword) {

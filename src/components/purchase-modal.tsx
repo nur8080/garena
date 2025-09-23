@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import Link from 'next/link';
 import { checkPurchaseEligibility } from '@/app/actions/check-purchase-eligibility';
+import { useRefresh } from '@/context/RefreshContext';
 
 // The product passed to this modal has its _id serialized to a string
 interface ProductWithStringId extends Omit<Product, '_id'> {
@@ -74,6 +75,7 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
   const router = useRouter();
   const { toast } = useToast();
   const eligibilityCheckPerformed = useRef(false);
+  const { triggerRefresh } = useRefresh();
 
 
   const handleClose = useCallback(() => {
@@ -105,7 +107,8 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
               title: "Payment Successful!",
               description: "Your order has been processed.",
             });
-            window.location.reload();
+            triggerRefresh();
+            handleClose();
           }
         } catch (error) {
           console.error("Error checking payment status:", error);
@@ -114,7 +117,7 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
       }, 3000); // Poll every 3 seconds
     }
     return () => clearInterval(intervalId);
-  }, [step, currentTransactionId, toast]);
+  }, [step, currentTransactionId, toast, triggerRefresh, handleClose]);
 
 
   useEffect(() => {

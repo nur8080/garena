@@ -15,6 +15,7 @@ import PopupNotification from '@/components/popup-notification';
 import EventModal from '@/components/event-modal';
 import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
 import { app } from '@/lib/firebase/client';
+import { RefreshProvider } from '@/context/RefreshContext';
 
 const FCM_TOKEN_KEY = 'fcm_token';
 
@@ -166,6 +167,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
+        <RefreshProvider>
           {isLoading && <LoadingScreen />}
           <div className={cn(isLoading ? 'hidden' : 'flex flex-col flex-1')}>
             <Header user={user} notifications={standardNotifications} />
@@ -182,6 +184,7 @@ export default function RootLayout({
           {showEventModal && events.length > 0 && (
               <EventModal event={events[currentEventIndex]} onClose={handleEventClose} />
           )}
+        </RefreshProvider>
       </body>
     </html>
   );

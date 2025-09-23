@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import ProductCard from '@/components/product-card';
 import type { Product, User, Order, UserProductControl } from '@/lib/definitions';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search } from 'lucide-react';
 import { type ObjectId } from 'mongodb';
 import { getProducts, getUserData, getOrdersForUser, getUserProductControls } from '@/app/actions';
+import { useRefresh } from '@/context/RefreshContext';
 
 interface ProductListProps {
     initialProducts: (Product & { _id: string | ObjectId })[];
@@ -24,40 +25,48 @@ export default function ProductList({ initialProducts, initialUser, initialOrder
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { refreshKey } = useRefresh();
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [
+        updatedProducts,
+        updatedUser,
+      ] = await Promise.all([
+        getProducts(),
+        getUserData()
+      ]);
+
+      let updatedOrders: Order[] = [];
+      let updatedControls: UserProductControl[] = [];
+      
+      if (updatedUser) {
+          [updatedOrders, updatedControls] = await Promise.all([
+              getOrdersForUser(),
+              getUserProductControls(updatedUser.gamingId)
+          ]);
+      }
+
+      setProducts(updatedProducts.map(p => ({...p, _id: p._id.toString()})));
+      setUser(updatedUser);
+      setOrders(updatedOrders);
+      setControls(updatedControls);
+
+    } catch (error) {
+      console.error("Failed to poll for live data:", error);
+    }
+  }, []);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const [
-          updatedProducts,
-          updatedUser,
-        ] = await Promise.all([
-          getProducts(),
-          getUserData()
-        ]);
-
-        let updatedOrders: Order[] = [];
-        let updatedControls: UserProductControl[] = [];
-        
-        if (updatedUser) {
-            [updatedOrders, updatedControls] = await Promise.all([
-                getOrdersForUser(),
-                getUserProductControls(updatedUser.gamingId)
-            ]);
-        }
-
-        setProducts(updatedProducts.map(p => ({...p, _id: p._id.toString()})));
-        setUser(updatedUser);
-        setOrders(updatedOrders);
-        setControls(updatedControls);
-
-      } catch (error) {
-        console.error("Failed to poll for live data:", error);
-      }
-    }, 3000); // Poll every 3 seconds
-
+    const interval = setInterval(fetchData, 3000); // Poll every 3 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (refreshKey > 0) {
+      fetchData();
+    }
+  }, [refreshKey, fetchData]);
 
   const categories = useMemo(() => {
     const allCategories = products
