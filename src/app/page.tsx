@@ -35,7 +35,12 @@ export default async function Home() {
     <div className="flex flex-col">
       <ImageSlider />
       <CoinSystem user={user} />
-      <ProductList initialProducts={productsWithStringId} user={user} orders={orders} controls={controls} />
+      <ProductList 
+        initialProducts={productsWithStringId} 
+        initialUser={user} 
+        initialOrders={orders} 
+        initialControls={controls} 
+      />
       <FaqChatbot />
     </div>
   );

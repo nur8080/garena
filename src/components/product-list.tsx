@@ -1,77 +1,104 @@
-
-
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ProductCard from '@/components/product-card';
 import type { Product, User, Order, UserProductControl } from '@/lib/definitions';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 import { type ObjectId } from 'mongodb';
-
+import { getProducts, getUserData, getOrdersForUser, getUserProductControls } from '@/app/actions';
 
 interface ProductListProps {
     initialProducts: (Product & { _id: string | ObjectId })[];
-    user: User | null;
-    orders: Order[];
-    controls: UserProductControl[];
+    initialUser: User | null;
+    initialOrders: Order[];
+    initialControls: UserProductControl[];
 }
 
-export default function ProductList({ initialProducts, user, orders, controls }: ProductListProps) {
+export default function ProductList({ initialProducts, initialUser, initialOrders, initialControls }: ProductListProps) {
+  const [products, setProducts] = useState(initialProducts);
+  const [user, setUser] = useState(initialUser);
+  const [orders, setOrders] = useState(initialOrders);
+  const [controls, setControls] = useState(initialControls);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const [
+          updatedProducts,
+          updatedUser,
+        ] = await Promise.all([
+          getProducts(),
+          getUserData()
+        ]);
+
+        let updatedOrders: Order[] = [];
+        let updatedControls: UserProductControl[] = [];
+        
+        if (updatedUser) {
+            [updatedOrders, updatedControls] = await Promise.all([
+                getOrdersForUser(),
+                getUserProductControls(updatedUser.gamingId)
+            ]);
+        }
+
+        setProducts(updatedProducts.map(p => ({...p, _id: p._id.toString()})));
+        setUser(updatedUser);
+        setOrders(updatedOrders);
+        setControls(updatedControls);
+
+      } catch (error) {
+        console.error("Failed to poll for live data:", error);
+      }
+    }, 3000); // Poll every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const categories = useMemo(() => {
-    const allCategories = initialProducts
+    const allCategories = products
       .map(p => p.category)
       .filter((c): c is string => !!c);
     return ['all', ...Array.from(new Set(allCategories))];
-  }, [initialProducts]);
+  }, [products]);
 
   const filteredAndSortedProducts = useMemo(() => {
-    let products = [...initialProducts];
+    let currentProducts = [...products];
     
-    // Filter out hidden products for the current user
     if (user) {
         const hiddenProductIds = controls
             .filter(c => c.type === 'hideProduct' && c.gamingId === user.gamingId)
             .map(c => c.productId);
         
-        products = products.filter(p => !hiddenProductIds.includes(p._id.toString()));
+        currentProducts = currentProducts.filter(p => !hiddenProductIds.includes(p._id.toString()));
     }
 
-
-    // Filter by category
     if (selectedCategory !== 'all') {
-      products = products.filter(p => p.category === selectedCategory);
+      currentProducts = currentProducts.filter(p => p.category === selectedCategory);
     }
 
-    // Sort by search term
     if (searchTerm.trim() !== '') {
       const lowercasedSearchTerm = searchTerm.toLowerCase();
-      products.sort((a, b) => {
+      currentProducts = currentProducts.filter(p => p.name.toLowerCase().includes(lowercasedSearchTerm));
+      currentProducts.sort((a, b) => {
         const aName = a.name.toLowerCase();
         const bName = b.name.toLowerCase();
-        
         const aStartsWith = aName.startsWith(lowercasedSearchTerm);
         const bStartsWith = bName.startsWith(lowercasedSearchTerm);
         
         if (aStartsWith && !bStartsWith) return -1;
         if (!aStartsWith && bStartsWith) return 1;
 
-        const aContains = aName.includes(lowercasedSearchTerm);
-        const bContains = bName.includes(lowercasedSearchTerm);
-
-        if (aContains && !bContains) return -1;
-        if (!aContains && bContains) return 1;
-
-        return 0; // Keep original order if no match or both match same way
+        return aName.localeCompare(bName);
       });
     }
 
-    return products;
-  }, [initialProducts, searchTerm, selectedCategory, user, controls]);
+    return currentProducts;
+  }, [products, searchTerm, selectedCategory, user, controls]);
 
   return (
     <section className="w-full py-6 md:py-10 lg:py-12 bg-background">
@@ -108,7 +135,7 @@ export default function ProductList({ initialProducts, user, orders, controls }:
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
           {filteredAndSortedProducts.map((product) => {
             const productOrders = orders.filter(order => order.productId === product._id.toString());
-            const control = controls.find(c => c.productId === product._id.toString());
+            const control = user ? controls.find(c => c.productId === product._id.toString() && c.gamingId === user.gamingId) : undefined;
 
             return (
                 <ProductCard
