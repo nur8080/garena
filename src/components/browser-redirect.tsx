@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { RotateCw } from 'lucide-react';
+import Image from 'next/image';
 
 export default function BrowserRedirect() {
   const [isInAppBrowser, setIsInAppBrowser] = useState(false);
@@ -40,6 +41,7 @@ export default function BrowserRedirect() {
   return (
     <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black text-white p-8">
       <div className="text-center">
+        <Image src="/img/garena.png" alt="Garena Logo" width={80} height={80} className="mx-auto mb-6" />
         <h1 className="text-2xl font-bold mb-4">Browser Not Supported</h1>
         <p className="mb-6 text-neutral-300">
           For the best experience, please open this website in your phone's default browser (like Chrome or Safari).
