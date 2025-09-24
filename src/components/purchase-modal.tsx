@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { Product, User } from '@/lib/definitions';
-import { Loader2, X, Smartphone, Globe, Coins, ShieldCheck, ShoppingCart } from 'lucide-react';
+import { Loader2, X, Smartphone, Globe, Coins, ShieldCheck, ShoppingCart, Check } from 'lucide-react';
 import Image from 'next/image';
 import { createRedeemCodeOrder, registerGamingId as registerAction, createRazorpayOrder } from '@/app/actions';
 import {
@@ -22,6 +22,7 @@ import {
 import Link from 'next/link';
 import { checkPurchaseEligibility } from '@/app/actions/check-purchase-eligibility';
 import { useRefresh } from '@/context/RefreshContext';
+import { cn } from '@/lib/utils';
 
 // The product passed to this modal has its _id serialized to a string
 interface ProductWithStringId extends Omit<Product, '_id'> {
@@ -34,7 +35,7 @@ interface PurchaseModalProps {
   onClose: () => void;
 }
 
-type ModalStep = 'verifying' | 'register' | 'details' | 'processing' | 'qrPayment';
+type ModalStep = 'verifying' | 'register' | 'details' | 'processing' | 'qrPayment' | 'success';
 
 const Countdown = ({ onExpire }: { onExpire: () => void }) => {
     const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
@@ -103,21 +104,17 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
           const data = await response.json();
           if (data.success && data.orderFound) {
             clearInterval(intervalId);
-            toast({
-              title: "Payment Successful!",
-              description: "Your order has been processed.",
-            });
             triggerRefresh();
-            handleClose();
+            setStep('success');
+            setTimeout(() => handleClose(), 4000);
           }
         } catch (error) {
           console.error("Error checking payment status:", error);
-          // Don't stop polling on fetch errors, just log them
         }
       }, 3000); // Poll every 3 seconds
     }
     return () => clearInterval(intervalId);
-  }, [step, currentTransactionId, toast, triggerRefresh, handleClose]);
+  }, [step, currentTransactionId, triggerRefresh, handleClose]);
 
 
   useEffect(() => {
@@ -423,7 +420,24 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                     <ShieldCheck className="w-3.5 h-3.5" /> Powered by UPI India
                 </div>
             </>
-        )
+        );
+        case 'success':
+        return (
+            <div className="text-center py-10 px-4 flex flex-col items-center justify-center">
+                <div className="relative w-24 h-24 mb-4">
+                    <div className="absolute inset-0 bg-green-100 rounded-full animate-ping"></div>
+                    <div className="relative w-24 h-24 bg-green-500 rounded-full flex items-center justify-center">
+                        <Check className="w-16 h-16 text-white stroke-[3] animate-in zoom-in-50" />
+                    </div>
+                </div>
+                <h2 className="text-2xl font-bold font-headline text-green-600 mb-2">Payment Successful!</h2>
+                <p className="text-muted-foreground mb-4">Congratulations! Your purchase has been processed.</p>
+                <p className="text-sm">You can check your <Button asChild variant="link" className="p-0"><Link href="/order">Order Page</Link></Button> for the delivery status.</p>
+                <div className="w-full bg-gray-200 rounded-full h-1 mt-6 overflow-hidden">
+                    <div className="bg-green-500 h-1 rounded-full animate-[progress_4s_linear_forwards]" style={{'--final-width': '100%'} as any}></div>
+                </div>
+            </div>
+        );
       default:
         return null;
     }
@@ -431,15 +445,18 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogClose asChild>
-            <button onClick={handleClose} className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </button>
-        </DialogClose>
+      <DialogContent className="sm:max-w-md" hideCloseButton={step === 'success'}>
+        {step !== 'success' && (
+            <DialogClose asChild>
+                <button onClick={handleClose} className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+                </button>
+            </DialogClose>
+        )}
         {renderContent()}
       </DialogContent>
     </Dialog>
   );
 }
+
