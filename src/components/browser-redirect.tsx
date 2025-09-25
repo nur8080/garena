@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -51,7 +52,7 @@ export default function BrowserRedirect() {
           variant="outline" 
           className={cn(
             "relative z-10 overflow-hidden",
-            "bg-transparent text-white border-white hover:bg-white hover:text-black btn-glow"
+            "bg-black text-white border-white hover:bg-white hover:text-black btn-glow"
           )}
           onClick={() => window.location.reload()}
         >
