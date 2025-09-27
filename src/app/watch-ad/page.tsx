@@ -191,10 +191,8 @@ export default function WatchAdPage() {
           </div>
           
           {!ad.hideCtaButton && (
-            <div className={cn(
-                "absolute bottom-20 left-0 right-0 flex justify-center transition-opacity duration-500 pointer-events-auto",
-                showCta ? 'animate-pop-in' : 'opacity-0'
-            )}>
+            <div className="fixed bottom-20 left-0 right-0 flex justify-center pointer-events-auto">
+              <div className={cn("transition-opacity duration-500", showCta ? 'animate-slide-in-up' : 'opacity-0')}>
                 <Button 
                     onClick={handleCtaClick}
                     variant={ad.ctaColor}
@@ -203,6 +201,7 @@ export default function WatchAdPage() {
                 >
                 {ad.ctaText}
                 </Button>
+              </div>
             </div>
           )}
         </div>

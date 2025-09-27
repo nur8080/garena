@@ -92,14 +92,14 @@ export default {
             '0%': { transform: 'translateX(-100%)' },
             '100%': { transform: 'translateX(0)' },
         },
-        'pop-in': {
+        'slide-in-up': {
             '0%': {
                 opacity: '0',
-                transform: 'scale(0.8) translateY(10px)',
+                transform: 'translateY(100%)',
             },
             '100%': {
                 opacity: '1',
-                transform: 'scale(1) translateY(0)',
+                transform: 'translateY(0)',
             },
         },
       },
@@ -107,7 +107,7 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'progress-smooth': 'progress-smooth var(--duration, 30s) linear forwards',
-        'pop-in': 'pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+        'slide-in-up': 'slide-in-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
       },
     },
   },
