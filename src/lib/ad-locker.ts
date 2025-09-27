@@ -10,7 +10,7 @@ const adLockCache = new Map<string, { ad: CustomAd; expires: number }>();
 
 // A unique identifier for the current user/session.
 // We use a combination of the gaming_id cookie and a session-specific random value.
-function getUserLockKey(): string {
+async function getUserLockKey(): Promise<string> {
     const gamingId = cookies().get('gaming_id')?.value;
     let sessionKey = cookies().get('ad_lock_session')?.value;
 
@@ -27,8 +27,8 @@ function getUserLockKey(): string {
  * Attempts to retrieve a "locked" ad for the current user from the cache.
  * @returns The cached CustomAd if a valid lock exists, otherwise null.
  */
-export function getLockedAd(): CustomAd | null {
-    const key = getUserLockKey();
+export async function getLockedAd(): Promise<CustomAd | null> {
+    const key = await getUserLockKey();
     const lockedItem = adLockCache.get(key);
 
     if (lockedItem && lockedItem.expires > Date.now()) {
@@ -46,8 +46,8 @@ export function getLockedAd(): CustomAd | null {
  * Creates a "lock" for the current user with a specific ad for 10 seconds.
  * @param ad The CustomAd to lock for the user.
  */
-export function setAdLock(ad: CustomAd): void {
-    const key = getUserLockKey();
+export async function setAdLock(ad: CustomAd): Promise<void> {
+    const key = await getUserLockKey();
     const expires = Date.now() + 10 * 1000; // 10-second lock
     adLockCache.set(key, { ad, expires });
 }

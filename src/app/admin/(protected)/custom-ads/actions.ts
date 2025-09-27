@@ -34,7 +34,7 @@ export async function getRandomAd(): Promise<CustomAd | null> {
     noStore();
     
     // Check for a locked ad first.
-    const lockedAd = getLockedAd();
+    const lockedAd = await getLockedAd();
     if (lockedAd) {
         return lockedAd;
     }
@@ -48,7 +48,7 @@ export async function getRandomAd(): Promise<CustomAd | null> {
         const randomAd = JSON.parse(JSON.stringify(ads[0]));
         
         // Lock the newly fetched ad for the user.
-        setAdLock(randomAd);
+        await setAdLock(randomAd);
         
         return randomAd;
 
@@ -150,4 +150,3 @@ export async function deleteAd(adId: string): Promise<{ success: boolean, messag
         return { success: false, message: 'An error occurred.' };
     }
 }
-
