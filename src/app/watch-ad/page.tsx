@@ -193,9 +193,8 @@ export default function WatchAdPage() {
           
           {!ad.hideCtaButton && (
              <div className={cn(
-                "flex flex-col items-center gap-4 transition-all duration-500 pointer-events-auto",
-                "transform",
-                showCta ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                "absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 transition-all duration-500 pointer-events-auto",
+                showCta ? 'animate-fade-in-up' : 'opacity-0'
             )}>
                 <Button 
                     onClick={handleCtaClick}
