@@ -22,10 +22,8 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
     <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm p-8">
         <div className="text-center p-8 pt-12 flex flex-col items-center">
             <Image src="/img/garena.png" alt="Garena Logo" width={80} height={80} className="mb-4 opacity-0 animate-[fade-in-up_0.5s_ease-out_0.2s_forwards]" />
-            {/* Main animated icon */}
              <div className="relative inline-block mb-6">
                 <svg className="w-28 h-28" viewBox="0 0 100 100">
-                    {/* Circle */}
                     <path 
                         d="M 50, 5 A 45,45 0 1 1 49.9,5"
                         fill="none" 
@@ -35,7 +33,6 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
                         className="animate-[draw-g_1s_ease-out_forwards]"
                         style={{ strokeDasharray: 283, strokeDashoffset: 283, animationDelay: '0.5s' }}
                     />
-                    {/* Checkmark */}
                      <path 
                         d="M 30 50 L 45 65 L 70 40" 
                         fill="none" 
@@ -49,7 +46,6 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
                 </svg>
             </div>
 
-            {/* Text animation */}
             <h1 className="text-4xl font-headline font-bold text-foreground animate-[fade-in-up_0.5s_ease-out_1.5s_forwards] opacity-0">
               {coins && coins > 0 ? 'Welcome!' : 'Welcome Back!'}
             </h1>
@@ -64,7 +60,7 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
                   You've received
                   <div className="relative flex items-center justify-center gap-1 font-bold text-foreground">
                     <div className="relative z-10 flex items-center gap-1">
-                        <Coins className="w-6 h-6 text-amber-500 animate-[bounce-short_1s_ease-in-out_infinite]" style={{ animationDelay: '2.3s' }} />
+                        <Coins className="w-6 h-6 text-amber-500" />
                         {coins} Coins
                     </div>
                   </div>
@@ -72,14 +68,13 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
               </div>
             )}
             
-            {/* Progress bar */}
             <div className={
               "w-full max-w-xs bg-muted rounded-full h-1.5 overflow-hidden " +
               (coins ? 'mt-0' : 'mt-8')
             }>
               <div
                 className="bg-primary h-1.5 rounded-full animate-progress-smooth"
-                style={{'--duration': '3s', animationDelay: '0.5s'} as React.CSSProperties}
+                style={{'--duration': '3s', animationDelay: '0.5s', transform: 'translateX(-100%)'} as React.CSSProperties}
               ></div>
             </div>
         </div>
@@ -94,10 +89,6 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
         @keyframes progress-smooth {
           from { transform: translateX(-100%); }
           to { transform: translateX(0); }
-        }
-        @keyframes bounce-short {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15%); }
         }
       `}</style>
     </div>
