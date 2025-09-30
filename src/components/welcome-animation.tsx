@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect } from 'react';
@@ -21,10 +20,10 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
   return (
     <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm p-8">
         <div className="text-center p-8 pt-12 flex flex-col items-center">
+            <Image src="/img/garena.png" alt="Garena Logo" width={80} height={80} className="mb-4 opacity-0 animate-[fade-in-up_0.5s_ease-out_0.2s_forwards]" />
             {/* Main animated icon */}
              <div className="relative inline-block mb-6">
-                <Image src="/img/garena.png" alt="Garena Logo" width={80} height={80} className="mb-4 opacity-0 animate-[fade-in-up_0.5s_ease-out_0.2s_forwards]" />
-                <svg className="w-28 h-28 absolute -top-8 -left-8" viewBox="0 0 100 100">
+                <svg className="w-28 h-28" viewBox="0 0 100 100">
                     {/* Circle */}
                     <path 
                         d="M 50, 5 A 45,45 0 1 1 49.9,5"
@@ -33,7 +32,18 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
                         strokeWidth="5" 
                         strokeLinecap="round" 
                         className="animate-[draw-g_1s_ease-out_forwards]"
-                        style={{ strokeDasharray: 283, strokeDashoffset: 283 }}
+                        style={{ strokeDasharray: 283, strokeDashoffset: 283, animationDelay: '0.5s' }}
+                    />
+                    {/* Checkmark */}
+                     <path 
+                        d="M 30 50 L 45 65 L 70 40" 
+                        fill="none" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth="5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        className="animate-[draw-g_0.5s_ease-out_forwards]"
+                        style={{ strokeDasharray: 60, strokeDashoffset: 60, animationDelay: '1s' }}
                     />
                 </svg>
             </div>
@@ -62,7 +72,10 @@ export default function WelcomeAnimation({ coins }: WelcomeAnimationProps) {
             )}
             
             {/* Progress bar */}
-            <div className={`w-full max-w-xs bg-muted rounded-full h-1.5 overflow-hidden ${coins ? 'mt-0' : 'mt-8'}`}>
+            <div className={
+              "w-full max-w-xs bg-muted rounded-full h-1.5 overflow-hidden " +
+              (coins ? 'mt-0' : 'mt-8')
+            }>
               <div
                 className="bg-primary h-1.5 rounded-full animate-progress-smooth"
                 style={{'--duration': '3s', animationDelay: '0.5s'} as React.CSSProperties}
