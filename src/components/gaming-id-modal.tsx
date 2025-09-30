@@ -154,7 +154,7 @@ Thank you for your consideration.
                     />
                 </div>
                 <Button onClick={handleRegister} className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : 'Continue'}
+                    {isLoading ? <Loader2 className="animate-spin" /> : 'Continue & get 800 coins'}
                 </Button>
                 </div>
             </>
