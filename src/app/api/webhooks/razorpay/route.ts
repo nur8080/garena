@@ -120,8 +120,14 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            // Create in-app notification
-            const notificationMessage = `Your purchase of ${product.name} for ₹${finalPrice} was successful!`;
+            // Create in-app notification based on product type
+            let notificationMessage: string;
+            if (product.isCoinProduct) {
+                 notificationMessage = `Your purchase of ${product.name} for ₹${finalPrice} was successful! The coins have been added to your account.`;
+            } else {
+                 notificationMessage = `Your order for ${product.name} (₹${finalPrice}) has been received and is now processing.`;
+            }
+
             const newNotification: Omit<Notification, '_id'> = {
                 gamingId: gamingId,
                 message: notificationMessage,
@@ -141,10 +147,21 @@ export async function POST(req: NextRequest) {
 
         // Send push notification outside the transaction
         if (user.fcmToken) {
+            let pushTitle: string;
+            let pushBody: string;
+
+            if (product.isCoinProduct) {
+                pushTitle = 'Garena Store: Purchase Successful!';
+                pushBody = `Your purchase of ${product.name} for ₹${finalPrice} was successful!`;
+            } else {
+                pushTitle = 'Garena Store: Order Processing!';
+                pushBody = `Your order for ${product.name} is now processing. We will notify you upon completion.`;
+            }
+            
             await sendPushNotification({
                 token: user.fcmToken,
-                title: 'Garena Store: Purchase Successful!',
-                body: `Your purchase of ${product.name} for ₹${finalPrice} was successful!`,
+                title: pushTitle,
+                body: pushBody,
                 imageUrl: product.imageUrl,
             });
         }
