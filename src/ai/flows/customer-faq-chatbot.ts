@@ -38,6 +38,7 @@ const prompt = ai.definePrompt({
   2.  Base your answers *only* on the context provided in the "About Us," "Terms & Conditions," and "Privacy Policy" sections. Do not make up information.
   3.  If a user asks a question that cannot be answered with the given information, politely direct them to contact support via the contact page.
   4.  Maintain a polite, professional, and helpful tone at all times.
+  5.  If a user asks about their login history, instruct them to go to the Privacy Policy page and scroll to the bottom to find the "View Login History" button.
 
   ---
   **About Us Context:**
@@ -116,12 +117,12 @@ const prompt = ai.definePrompt({
   - How We Use Your Information: To process transactions, manage accounts, provide customer support, track orders, process refunds, and administer our referral program.
   - Advertising: This website provides discounts on gaming items by showing ads to users.
   - Security: We use administrative, technical, and physical security measures to help protect your personal information.
+  - Login History: Users can view a history of previous Gaming IDs used on their device by clicking the "View Login History" button at the bottom of the Privacy Policy page.
   
   ---
 
   Now, please answer the following user question:
-  "{{question}}"`,
-});
+  "{{question}}"`});
 
 const customerFAQChatbotFlow = ai.defineFlow(
   {
