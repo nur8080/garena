@@ -40,6 +40,7 @@ const prompt = ai.definePrompt({
   4.  Maintain a polite, professional, and helpful tone at all times.
   5.  If a user asks about their login history, instruct them to go to the Privacy Policy page and scroll to the bottom to find the "View Login History" button.
   6.  To receive their coin reward, users must watch the entire advertisement.
+  7.  If a user asks how to install the app, instruct them to tap their browser's menu button and select the 'Add to Home Screen' or 'Install App' option.
 
   ---
   **About Us Context:**
