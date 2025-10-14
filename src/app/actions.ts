@@ -1,5 +1,6 @@
 
 
+
 'use server';
 
 import { customerFAQChatbot, type CustomerFAQChatbotInput } from '@/ai/flows/customer-faq-chatbot';
@@ -19,6 +20,7 @@ import Razorpay from 'razorpay';
 import { sendPushNotification, sendMulticastPushNotification } from '@/lib/push-notifications';
 import { promoteVisualId } from '@/lib/visual-id-promoter';
 import { setSmartVisualId } from '@/lib/auto-visual-id';
+import { handlePreRegistrationPromotion } from '@/lib/pre-registration-promoter';
 
 
 const key = new TextEncoder().encode(process.env.SESSION_SECRET || 'your-fallback-secret-for-session');
@@ -340,6 +342,11 @@ export async function registerGamingId(gamingId: string): Promise<{ success: boo
   }
 
   try {
+    // --- PRE-REGISTRATION PROMOTION CHECK ---
+    // This handles cases where the ID being registered is part of a visual ID relationship.
+    await handlePreRegistrationPromotion(gamingId);
+    // --- END PRE-REGISTRATION PROMOTION CHECK ---
+
     const db = await connectToDatabase();
     const logoutHistoryCookie = cookies().get('logout_history')?.value;
     let logoutHistory = null;
