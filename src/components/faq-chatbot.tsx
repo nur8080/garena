@@ -197,12 +197,6 @@ export default function FaqChatbot() {
               className="resize-none max-h-32 min-h-10"
               rows={1}
               onInput={handleTextareaInput}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e.currentTarget.form as HTMLFormElement);
-                }
-              }}
             />
             <Button type="submit" size="icon" disabled={isLoading || isHistoryLoading}>
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
