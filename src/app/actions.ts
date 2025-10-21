@@ -8,6 +8,7 @@
 
 
 
+
 'use server';
 
 import { customerFAQChatbot, type CustomerFAQChatbotInput } from '@/ai/flows/customer-faq-chatbot';
@@ -1212,6 +1213,8 @@ const productUpdateSchema = z.object({
   visibleTo: z.string().optional(),
   tag: z.string().optional(),
   tagColor: z.enum(['green', 'red']).optional(),
+  liveStock: z.coerce.number().optional(),
+  liveStockInterval: z.coerce.number().optional(),
 }).refine(
     (data) => {
         if (data.isCoinProduct === 'true') {
@@ -1269,7 +1272,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
         ? data.visibleTo.split(',').map(id => id.trim()).filter(id => id)
         : [];
     
-    const updateData: Partial<Product> = {
+    const updateData: Partial<Product> & { $unset?: any } = {
         name: data.name,
         price: data.price,
         quantity: data.quantity,
@@ -1288,7 +1291,15 @@ export async function updateProduct(productId: string, formData: FormData): Prom
         visibleTo: visibleToList,
         tag: data.tag,
         tagColor: data.tagColor,
+        liveStock: data.liveStock,
+        liveStockInterval: data.liveStockInterval,
     };
+    
+    if (data.liveStock && data.liveStockInterval && data.liveStock > 0 && data.liveStockInterval > 0) {
+        updateData.liveStockStart = new Date();
+    } else {
+        updateData.$unset = { liveStock: "", liveStockInterval: "", liveStockStart: "" };
+    }
 
 
     const db = await connectToDatabase();
@@ -1302,10 +1313,14 @@ export async function updateProduct(productId: string, formData: FormData): Prom
         return { success: false, message: `Display order ${data.displayOrder} is already in use by another product.` };
     }
 
+    const { $unset, ...restOfUpdateData } = updateData;
 
     await db.collection<Product>('products').updateOne(
         { _id: new ObjectId(productId) },
-        { $set: updateData }
+        { 
+            $set: restOfUpdateData,
+            ...($unset && { $unset })
+        }
     );
     
     revalidatePath('/');
@@ -2152,5 +2167,3 @@ export async function getLoginHistory(): Promise<{ gamingId: string; timestamp: 
   const sortedHistory = user.loginHistory.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   return sortedHistory;
 }
-
-    

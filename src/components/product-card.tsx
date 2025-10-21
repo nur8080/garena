@@ -15,7 +15,7 @@ import {
 import { useState, useEffect } from 'react';
 import PurchaseModal from './purchase-modal';
 import type { Product, User, UserProductControl, Order } from '@/lib/definitions';
-import { Ban, Coins, Timer, CheckCircle2, Lock } from 'lucide-react';
+import { Ban, Coins, Timer, CheckCircle2, Lock, PackageCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { type ObjectId } from 'mongodb';
@@ -28,6 +28,47 @@ interface ProductCardProps {
   orders: Order[];
   control: UserProductControl | undefined;
 }
+
+const LiveStock = ({ product }: { product: Product }) => {
+    const [stock, setStock] = useState(0);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+        if (!product.liveStock || !product.liveStockStart || !product.liveStockInterval) {
+            return;
+        }
+
+        const calculateCurrentStock = () => {
+            const now = new Date();
+            const start = new Date(product.liveStockStart!);
+            const elapsedSeconds = (now.getTime() - start.getTime()) / 1000;
+            const stockDecreased = Math.floor(elapsedSeconds / product.liveStockInterval!);
+            const currentStock = Math.max(0, product.liveStock! - stockDecreased);
+            setStock(currentStock);
+        };
+
+        calculateCurrentStock();
+        const timer = setInterval(calculateCurrentStock, (product.liveStockInterval || 1) * 1000);
+
+        return () => clearInterval(timer);
+    }, [product]);
+
+    if (!isMounted || !product.liveStock) {
+        return null;
+    }
+
+    if (stock <= 0) {
+        return <p className="text-sm text-destructive font-bold flex items-center gap-2"><Ban className="w-4 h-4"/> Sold Out!</p>
+    }
+
+    return (
+        <p className="text-sm text-green-600 font-bold flex items-center gap-2">
+            <PackageCheck className="w-4 h-4"/>
+            {stock} Available
+        </p>
+    );
+};
 
 const CountdownTimer = ({ endDate, isComingSoon }: { endDate: Date; isComingSoon?: boolean }) => {
   const [timeLeft, setTimeLeft] = useState({
@@ -120,6 +161,18 @@ export default function ProductCard({ product, user, orders, control }: ProductC
   const productWithStrId = { ...product, _id: product._id.toString() };
   
   const getBuyButton = () => {
+    let isLiveStockSoldOut = false;
+    if (product.liveStock && product.liveStockStart && product.liveStockInterval) {
+        const elapsedSeconds = (new Date().getTime() - new Date(product.liveStockStart).getTime()) / 1000;
+        const stockDecreased = Math.floor(elapsedSeconds / product.liveStockInterval);
+        isLiveStockSoldOut = (product.liveStock - stockDecreased) <= 0;
+    }
+
+    if(isLiveStockSoldOut) {
+        return <Button className="w-full font-bold text-base" disabled variant="secondary"><Ban className="mr-2 h-4 w-4" />Sold Out</Button>;
+    }
+
+
     const isEventActive = product.endDate && new Date(product.endDate) > new Date();
 
     if (product.isComingSoon && isEventActive) {
@@ -178,9 +231,12 @@ export default function ProductCard({ product, user, orders, control }: ProductC
           </CardHeader>
           <CardContent className="flex-grow p-4">
             <CardTitle className="text-lg font-headline font-semibold">{product.name}</CardTitle>
-            <CardDescription className="text-sm">
-              Quantity: {product.quantity}
-            </CardDescription>
+            <div className="mt-1 space-y-1">
+                <CardDescription className="text-sm">
+                  Quantity: {product.quantity}
+                </CardDescription>
+                {product.liveStock && product.liveStockInterval && <LiveStock product={product} />}
+            </div>
             {product.coinsApplicable > 0 && !product.isCoinProduct && (
               <div className="text-xs text-amber-600 font-semibold mt-1 flex items-center font-sans gap-1">
                 <Coins className="w-3 h-3" />

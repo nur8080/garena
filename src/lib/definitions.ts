@@ -59,8 +59,11 @@ export interface Product {
     oneTimeBuy?: boolean;
     visibility?: 'all' | 'custom';
     visibleTo?: string[];
-    tag?: string; // New field for the product tag
+    tag?: string; 
     tagColor?: 'green' | 'red';
+    liveStock?: number;
+    liveStockInterval?: number;
+    liveStockStart?: Date;
 }
 
 export interface Order {

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Trash2, Coins, PlusCircle, Users, User } from 'lucide-react';
+import { Loader2, Trash2, Coins, PlusCircle, Users, User, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { updateProduct, vanishProduct, addProduct } from '@/app/actions';
 import type { Product } from '@/lib/definitions';
@@ -211,9 +211,9 @@ export default function PriceManagementList({ initialProducts }: PriceManagement
                     defaultValue={product.imageUrl}
                   />
                 </div>
-                <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+                <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`endDate-${product._id}`}>Event Date (Optional)</Label>
+                    <Label htmlFor={`endDate-${product._id}`}>Event Expiration (Optional)</Label>
                     <Input
                       id={`endDate-${product._id}`}
                       name="endDate"
@@ -225,13 +225,27 @@ export default function PriceManagementList({ initialProducts }: PriceManagement
                       <div className="flex items-center space-x-2">
                         <Checkbox id={`isComingSoon-${product._id}`} name="isComingSoon" defaultChecked={product.isComingSoon} />
                         <Label htmlFor={`isComingSoon-${product._id}`} className="text-sm font-medium leading-none">
-                          Set as Coming Soon
+                          Set as "Coming Soon"
                         </Label>
                       </div>
                   </div>
                 </div>
 
-                <div className="flex items-end justify-between space-x-4">
+                <div className="lg:col-span-4 border-t pt-4">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2"><Clock /> Live Availability (Optional)</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor={`liveStock-${product._id}`}>Live Stock</Label>
+                            <Input id={`liveStock-${product._id}`} name="liveStock" type="number" defaultValue={product.liveStock} placeholder="e.g., 100" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor={`liveStockInterval-${product._id}`}>Decrease Interval (sec)</Label>
+                            <Input id={`liveStockInterval-${product._id}`} name="liveStockInterval" type="number" defaultValue={product.liveStockInterval} placeholder="e.g., 1" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="lg:col-span-4 flex items-end justify-between space-x-4 border-t pt-4">
                     <div className="space-y-2">
                         <Label htmlFor={`isAvailable-${product._id}`}>Available</Label>
                         <div className="flex items-center h-10">
