@@ -145,6 +145,7 @@ const prompt = ai.definePrompt({
 
   - We sometimes send special subscription offers to lucky users, new users, or other special members of our community.
   - These offers are delivered via a link in a user's notification panel.
+  - Users can also manually contact our support team to request a special subscription offer link.
   - When a user clicks on this link, they will see the details of the special subscription and can choose to purchase it.
   - These subscriptions can be billed on a weekly, monthly, or yearly basis.
 
@@ -189,3 +190,4 @@ const customerFAQChatbotFlow = ai.defineFlow(
     
 
     
+
