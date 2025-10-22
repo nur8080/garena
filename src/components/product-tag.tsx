@@ -25,7 +25,7 @@ export default function ProductTag({ tag, color = 'green' }: ProductTagProps) {
   }
 
   return (
-    <div className="absolute -top-5 -right-2 z-10 drop-shadow-lg" style={{ transform: 'rotate(4deg)' }}>
+    <div className="absolute -top-4 -right-2 z-10 drop-shadow-lg" style={{ transform: 'rotate(4deg)' }}>
         <div 
           className={cn(
             'relative text-white',

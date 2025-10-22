@@ -253,26 +253,9 @@ export default function ProductCard({ product, user, orders, control }: ProductC
   return (
     <>
       <div className="relative">
-        <div className="absolute -top-5 -right-2 z-10 drop-shadow-lg" style={{ transform: 'rotate(4deg)' }}>
-            <div 
-            className={cn(
-                'relative text-white',
-                'text-xs font-bold uppercase tracking-wider',
-                'px-3 py-1 rounded-lg',
-                'overflow-hidden animate-glowing-ray',
-                product.tagColor === 'red' ? 'bg-red-600' : 'bg-green-600'
-            )}
-            >
-            {product.tag}
-            </div>
-            <div className={cn(
-                "absolute top-full right-2 w-0 h-0",
-                "border-l-[10px] border-l-transparent",
-                "border-r-[0px] border-r-transparent",
-                "border-t-[12px]",
-                product.tagColor === 'red' ? 'border-t-red-600' : 'border-t-green-600'
-            )}></div>
-        </div>
+        {product.tag && (
+          <ProductTag tag={product.tag} color={product.tagColor} />
+        )}
         <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <CardHeader className="p-0">
             <div className="relative aspect-video">
