@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Dialog, DialogContent, DialogClose, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -18,7 +19,6 @@ const EventMedia = ({ src }: { src: string }) => {
                 src={src}
                 autoPlay
                 loop
-                muted
                 playsInline
                 className="rounded-lg w-full h-full object-contain"
             />
