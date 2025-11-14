@@ -41,6 +41,7 @@ interface PurchaseModalProps {
 type ModalStep = 'verifying' | 'register' | 'details' | 'processing' | 'qrPayment' | 'success';
 
 const UTR_SUBMIT_DELAY = 20000; // 20 seconds
+const QR_EXPIRY_SECONDS = 300; // 5 minutes
 
 export default function PurchaseModal({ product, user: initialUser, onClose }: PurchaseModalProps) {
   const [isOpen, setIsOpen] = useState(true);
@@ -51,6 +52,8 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
   const [isLoading, setIsLoading] = useState(false);
   const [showUtrPopup, setShowUtrPopup] = useState(false);
   const [utr, setUtr] = useState('');
+  const [qrCountdown, setQrCountdown] = useState(QR_EXPIRY_SECONDS);
+  const [isQrLoading, setIsQrLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
   const eligibilityCheckPerformed = useRef(false);
@@ -63,10 +66,25 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
 
   useEffect(() => {
     if (step === 'qrPayment') {
-      const timer = setTimeout(() => {
+      const qrLoadTimer = setTimeout(() => setIsQrLoading(false), 1000);
+      const utrPopupTimer = setTimeout(() => {
         setShowUtrPopup(true);
       }, UTR_SUBMIT_DELAY);
-      return () => clearTimeout(timer);
+      const countdownTimer = setInterval(() => {
+        setQrCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownTimer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => {
+        clearTimeout(qrLoadTimer);
+        clearTimeout(utrPopupTimer);
+        clearInterval(countdownTimer);
+      }
     }
   }, [step]);
   
@@ -301,6 +319,8 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     case 'qrPayment':
         const upiId = "sm187966-1@okicici";
         const upiUrl = `upi://pay?pa=${upiId}&pn=Garena&am=${finalPrice}&cu=INR&tn=Purchase for ${product.name}`;
+        const minutes = Math.floor(qrCountdown / 60);
+        const seconds = qrCountdown % 60;
         return (
             <>
                 <DialogHeader className="text-center">
@@ -318,8 +338,20 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                         <p className="text-4xl font-bold text-primary font-sans">₹{finalPrice}</p>
                     </div>
                     
-                    <div className="p-2 bg-white rounded-lg border w-48 h-48 relative flex items-center justify-center">
-                        <QRCode value={upiUrl} size={180} />
+                    <div className="p-2 bg-white rounded-lg border w-40 h-40 relative flex items-center justify-center">
+                        {isQrLoading ? (
+                            <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                        ) : (
+                            <>
+                                <QRCode value={upiUrl} size={144} />
+                                {qrCountdown > 0 && (
+                                    <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center text-center">
+                                        <p className="font-mono text-xl font-bold text-destructive">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</p>
+                                        <p className="text-xs text-muted-foreground">QR expires in</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
 
                     <div className="w-full border-t pt-4 grid grid-cols-2 gap-3">
