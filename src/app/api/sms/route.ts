@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { PaymentLock, SmsWebhookLog, User, Order, Notification, Product } from '@/lib/definitions';
+import { PaymentLock, SmsWebhookLog, User, Order, Notification, Product, LegacyUser } from '@/lib/definitions';
 import { ObjectId } from 'mongodb';
 import { sendPushNotification } from '@/lib/push-notifications';
 
@@ -46,7 +46,7 @@ async function createOrderFromLock(lock: PaymentLock, smsLogId: ObjectId) {
                 status: orderStatus, 
                 coinsUsed,
                 finalPrice: lock.amount,
-                referralCode: user.referredByCode, // --- FIX: Add referral code to the order
+                referralCode: user.referredByCode,
                 isCoinProduct: !!product.isCoinProduct,
                 createdAt: new Date(),
                 coinsAtTimeOfPurchase: user.coins,
@@ -55,12 +55,24 @@ async function createOrderFromLock(lock: PaymentLock, smsLogId: ObjectId) {
             const orderResult = await db.collection<Order>('orders').insertOne(newOrder as Order, { session });
             createdOrder = { ...newOrder, _id: orderResult.insertedId };
             
-            // Handle coin logic
             if (product.isCoinProduct) {
-                // Add coins for coin product purchase
+                // For coin products, order is completed immediately
+                // Add coins to user
                 await db.collection<User>('users').updateOne({ _id: user._id }, { $inc: { coins: product.quantity } }, { session });
+                
+                // If it's a coin product and it's completed, credit the referrer immediately.
+                if (newOrder.referralCode) {
+                    const rewardAmount = newOrder.finalPrice * 0.50;
+                    await db.collection<LegacyUser>('legacy_users').updateOne(
+                        { referralCode: newOrder.referralCode },
+                        { $inc: { walletBalance: rewardAmount } },
+                        { session }
+                    );
+                }
+
             } else if (coinsUsed > 0) {
-                // Deduct coins for normal product purchase
+                // For normal products, just deduct coins used.
+                // The referrer will be credited when admin marks order as 'Completed'.
                 await db.collection<User>('users').updateOne({ _id: user._id }, { $inc: { coins: -coinsUsed } }, { session });
             }
 
