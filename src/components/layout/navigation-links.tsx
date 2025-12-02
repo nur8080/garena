@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -47,7 +48,7 @@ export default function NavigationLinks({ mobile, onLinkClick, notifications = [
             {label}
           </Link>
         ))}
-         <a href="https://github.com/dhdgs23/Garena-Store/releases/download/v1.0/base.apk" target="_blank" rel="noopener noreferrer">
+         <a href="https://github.com/dhdgs23/Garena-Store/releases/download/v1.0/base.apk" download>
             <Button variant="outline" className="w-full">
                 <Download className="mr-2" /> Download App
             </Button>
@@ -80,12 +81,6 @@ export default function NavigationLinks({ mobile, onLinkClick, notifications = [
           {label}
         </Link>
       ))}
-       <a href="https://github.com/dhdgs23/Garena-Store/releases/download/v1.0/base.apk" target="_blank" rel="noopener noreferrer">
-        <Button variant="outline">
-          Download
-          <Download className="h-4 w-4" />
-        </Button>
-      </a>
     </>
   );
 }
