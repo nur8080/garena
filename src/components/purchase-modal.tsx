@@ -385,24 +385,36 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                         )}
                     </div>
 
-                     <div className="w-full border-t pt-4 space-y-3">
-                        <p className="text-xs text-center text-muted-foreground font-medium">Trusted by</p>
-                        <div className="grid grid-cols-4 gap-3">
-                            <div className="flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground">
+                     <div className="w-full border-t pt-3 mt-1 space-y-3">
+                        <p className="text-xs text-center text-muted-foreground font-medium">Scan with any UPI app and pay</p>
+                        <div className="grid grid-cols-5 gap-x-2 gap-y-1">
+                            <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
                                 <Image src="/img/gpay.png" alt="Google Pay" width={24} height={24} />
                                 Google Pay
                             </div>
-                            <div className="flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground">
+                            <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
                                 <Image src="/img/phonepay.png" alt="PhonePe" width={24} height={24} />
                                 PhonePe
                             </div>
-                            <div className="flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground">
+                            <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
                                 <Image src="/img/paytm.png" alt="Paytm" width={24} height={24} />
                                 Paytm
                             </div>
-                            <div className="flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground">
-                                <ShoppingCart className="w-6 h-6" />
-                                Other UPI
+                            <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
+                                <Image src="/img/amazonpay.png" alt="Amazon Pay" width={24} height={24} />
+                                Amazon Pay
+                            </div>
+                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
+                                <Image src="/img/bhimpay.png" alt="BHIM UPI" width={24} height={24} />
+                                BHIM
+                            </div>
+                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
+                                <Image src="/img/fampay.png" alt="FamPay" width={24} height={24} />
+                                FamPay
+                            </div>
+                            <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground col-span-3">
+                                <Image src="/img/upi.png" alt="Other UPI Apps" width={24} height={24} />
+                                Other UPI Apps
                             </div>
                         </div>
                     </div>
@@ -450,7 +462,3 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     </Dialog>
   );
 }
-
-    
-
-    
