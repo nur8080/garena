@@ -1,8 +1,7 @@
-
 'use client';
 
 import Link from 'next/link';
-import { Menu, ShoppingCart, LogOut, Home } from 'lucide-react';
+import { Menu, ShoppingCart, LogOut, Home, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,

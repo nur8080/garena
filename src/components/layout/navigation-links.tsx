@@ -1,11 +1,10 @@
-
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Download } from 'lucide-react';
 import type { Notification, User } from '@/lib/definitions';
 import NotificationBell from './notification-bell';
 
@@ -48,6 +47,11 @@ export default function NavigationLinks({ mobile, onLinkClick, notifications = [
             {label}
           </Link>
         ))}
+         <a href="https://github.com/dhdgs23/Garena-Store/releases/download/v1.0/base.apk" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" className="w-full">
+                <Download className="mr-2" /> Download App
+            </Button>
+        </a>
       </>
     );
   }
@@ -76,6 +80,12 @@ export default function NavigationLinks({ mobile, onLinkClick, notifications = [
           {label}
         </Link>
       ))}
+       <a href="https://github.com/dhdgs23/Garena-Store/releases/download/v1.0/base.apk" target="_blank" rel="noopener noreferrer">
+        <Button variant="outline">
+          Download
+          <Download className="h-4 w-4" />
+        </Button>
+      </a>
     </>
   );
 }
