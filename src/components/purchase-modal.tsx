@@ -364,11 +364,11 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                     </div>
                     
                     <div className="flex flex-col items-center gap-2">
-                        <div className="p-2 bg-white rounded-lg border w-40 h-40 relative flex items-center justify-center">
+                        <div className="p-2 bg-white rounded-lg border w-44 h-44 relative flex items-center justify-center">
                             {isQrLoading ? (
                                 <Loader2 className="w-10 h-10 animate-spin text-primary" />
                             ) : (
-                                <QRCode value={upiUrl} size={144} />
+                                <QRCode value={upiUrl} size={160} />
                             )}
                         </div>
                         {qrCountdown > 0 ? (
@@ -466,5 +466,3 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
     </Dialog>
   );
 }
-
-    
