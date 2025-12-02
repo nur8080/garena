@@ -364,11 +364,11 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                     </div>
                     
                     <div className="flex flex-col items-center gap-2">
-                        <div className="p-2 bg-white rounded-lg border w-44 h-44 relative flex items-center justify-center">
+                        <div className="p-2 bg-white rounded-lg border w-48 h-48 sm:w-44 sm:h-44 relative flex items-center justify-center">
                             {isQrLoading ? (
                                 <Loader2 className="w-10 h-10 animate-spin text-primary" />
                             ) : (
-                                <QRCode value={upiUrl} size={160} />
+                                <QRCode value={upiUrl} size={176} className="w-full h-full" />
                             )}
                         </div>
                         {qrCountdown > 0 ? (
@@ -387,37 +387,37 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
 
                      <div className="w-full border-t pt-3 mt-1 space-y-3">
                         <p className="text-xs text-center text-muted-foreground font-medium">Scan with any UPI app and pay</p>
-                        <div className="grid grid-cols-4 gap-x-2 gap-y-2">
+                        <div className="grid grid-cols-4 gap-x-2 gap-y-3">
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/gpay.png" alt="Google Pay" width={24} height={24} />
+                                <Image src="/img/gpay.png" alt="Google Pay" width={28} height={28} />
                                 Google Pay
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/phonepay.png" alt="PhonePe" width={24} height={24} />
+                                <Image src="/img/phonepay.png" alt="PhonePe" width={28} height={28} />
                                 PhonePe
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/paytm.png" alt="Paytm" width={24} height={24} />
+                                <Image src="/img/paytm.png" alt="Paytm" width={28} height={28} />
                                 Paytm
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/amazonpay.png" alt="Amazon Pay" width={24} height={24} />
+                                <Image src="/img/amazonpay.png" alt="Amazon Pay" width={28} height={28} />
                                 Amazon Pay
                             </div>
                              <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/bhimpay.png" alt="BHIM UPI" width={24} height={24} />
+                                <Image src="/img/bhimpay.png" alt="BHIM UPI" width={28} height={28} />
                                 BHIM
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/fampay.png" alt="FamPay" width={24} height={24} />
+                                <Image src="/img/fampay.png" alt="FamPay" width={28} height={28} />
                                 FamPay
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/mobikwik.png" alt="MobiKwik" width={24} height={24} />
+                                <Image src="/img/mobikwik.png" alt="MobiKwik" width={28} height={28} />
                                 MobiKwik
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/upi.png" alt="Other UPI Apps" width={24} height={24} />
+                                <Image src="/img/upi.png" alt="Other UPI Apps" width={28} height={28} />
                                 Other Apps
                             </div>
                         </div>
