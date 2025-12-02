@@ -356,7 +356,7 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                 </DialogHeader>
                 <div className="flex flex-col items-center justify-center space-y-4 py-4">
                     <DialogDescription className="font-sans text-base text-center w-full">
-                      Scan to pay or use your favorite UPI app
+                      Scan the QR code to pay. Your payment will be verified automatically.
                     </DialogDescription>
                     <div className="text-center">
                         <p className="text-sm text-muted-foreground">Amount to Pay</p>
