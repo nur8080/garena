@@ -419,8 +419,8 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                                         style={{ height: "auto", maxWidth: "100%", width: "100%" }}
                                         viewBox={`0 0 176 176`}
                                     />
-                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black p-1 rounded-md shadow-inner">
-                                        <Image src="/img/upi.png" alt="UPI Logo" width={28} height={28} />
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-1 rounded-md shadow-inner">
+                                        <Image src="/img/upilogo.png" alt="UPI Logo" width={24} height={24} />
                                     </div>
                                 </div>
                             )}
@@ -471,7 +471,7 @@ export default function PurchaseModal({ product, user: initialUser, onClose }: P
                                 MobiKwik
                             </div>
                             <div className="flex flex-col items-center justify-start gap-1 text-[10px] text-muted-foreground">
-                                <Image src="/img/upi.png" alt="Other UPI Apps" width={28} height={28} />
+                                <Image src="/img/upilogo.png" alt="Other UPI Apps" width={28} height={28} />
                                 Other Apps
                             </div>
                         </div>
