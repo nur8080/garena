@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 const LOCK_TTL_MS = 90 * 1000; // 90 seconds
 
 /**
- * Finds the next available price for a UPI payment by checking for active payment locks.
+ * Finds the next available price for a UPI payment by checking for active and recently expired payment locks.
  * If the base amount is locked, it increments by 0.01 until an unlocked amount is found.
  * @param baseAmount The original price of the item.
  * @returns An object with the final available price and the convenience fee added.
@@ -20,10 +20,21 @@ export async function findAvailableUpiPrice(baseAmount: number): Promise<{ final
     let attempts = 0; // To prevent infinite loops in a highly concurrent scenario
     const MAX_ATTEMPTS = 100; // Stop after trying 100 increments (i.e., +₹1.00)
 
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+
     while (attempts < MAX_ATTEMPTS) {
+        // Check for either an active lock OR a recently expired lock for the current price.
         const existingLock = await db.collection<PaymentLock>('payment_locks').findOne({
             amount: finalPrice,
-            status: 'active'
+            $or: [
+                { status: 'active' },
+                { 
+                    status: 'expired',
+                    // Check when the lock was created, not when it expired.
+                    // This covers the case where a user closes the modal immediately.
+                    createdAt: { $gte: thirtySecondsAgo } 
+                }
+            ]
         });
 
         if (!existingLock) {
