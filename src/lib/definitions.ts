@@ -37,6 +37,7 @@ export interface User {
     isRedeemDisabled?: boolean; // If true, user cannot use redeem codes
     redeemDisabledAt?: Date; // Timestamp for when the redeem code was disabled
     loginHistory?: { gamingId: string; timestamp: Date }[];
+    ipHistory?: { ip: string; timestamp: Date }[];
 }
 
 

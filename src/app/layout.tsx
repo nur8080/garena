@@ -10,6 +10,7 @@ import Footer from '@/components/layout/footer';
 import { useState, useEffect, useCallback } from 'react';
 import LoadingScreen from '@/components/loading-screen';
 import { getEvents, getNotificationsForUser, getUserData, markNotificationAsRead, saveFcmToken } from './actions';
+import { logUserIp } from './actions/ip-logger';
 import type { Event, Notification, User } from '@/lib/definitions';
 import PopupNotification from '@/components/popup-notification';
 import EventModal from '@/components/event-modal';
@@ -51,6 +52,11 @@ export default function RootLayout({
     }
     const userData = await getUserData();
     setUser(userData);
+    
+    // Log user IP address in the background
+    if (userData) {
+      logUserIp();
+    }
 
     if (userData?.isBanned) {
       setBannedInfo({ id: userData.visualGamingId || userData.gamingId, message: userData.banMessage || 'Your account has been suspended.'});
