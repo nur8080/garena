@@ -1,4 +1,5 @@
 
+
 import { type ObjectId } from 'mongodb';
 
 // Represents a user account created via username/password on the /account page.
@@ -207,7 +208,7 @@ export interface SmsWebhookLog {
 
 export interface BlockedIdentifier {
   _id: ObjectId;
-  type: 'ip' | 'fingerprint';
+  type: 'ip' | 'fingerprint' | 'id';
   value: string;
   reason: string;
   createdAt: Date;

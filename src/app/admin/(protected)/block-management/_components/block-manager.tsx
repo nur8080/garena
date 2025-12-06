@@ -101,7 +101,7 @@ export default function BlockManager({ initialBlockedItems, initialHasMore, tota
       <Card>
         <form action={handleBlockSubmit}>
           <CardHeader>
-            <CardTitle>Block by IP or Device Fingerprint</CardTitle>
+            <CardTitle>Block by IP, Device Fingerprint, or ID</CardTitle>
             <CardDescription>Enter a value and a reason to block users. The reason will be shown to the blocked user.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -115,12 +115,13 @@ export default function BlockManager({ initialBlockedItems, initialHasMore, tota
                   <SelectContent>
                     <SelectItem value="ip">IP Address</SelectItem>
                     <SelectItem value="fingerprint">Device Fingerprint</SelectItem>
+                    <SelectItem value="id">Gaming ID</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="value">Value</Label>
-                <Input id="value" name="value" required placeholder="Enter IP or Fingerprint ID" />
+                <Input id="value" name="value" required placeholder="Enter IP, Fingerprint, or Gaming ID" />
               </div>
             </div>
             <div className="space-y-2">
@@ -160,7 +161,7 @@ export default function BlockManager({ initialBlockedItems, initialHasMore, tota
                              <div className="flex justify-between items-start">
                                 <div className="space-y-1">
                                     <p className="font-semibold font-mono text-destructive">{item.value}</p>
-                                    <Badge variant={item.type === 'ip' ? 'secondary' : 'outline'}>{item.type}</Badge>
+                                    <Badge variant={item.type === 'ip' ? 'secondary' : (item.type === 'id' ? 'outline' : 'default') }>{item.type}</Badge>
                                 </div>
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>

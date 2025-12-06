@@ -39,17 +39,27 @@ export async function checkBlockStatus(): Promise<{ isBlocked: boolean; reason: 
     const forwardedFor = headers().get('x-forwarded-for');
     const realIp = headers().get('x-real-ip');
     const ip = forwardedFor ? forwardedFor.split(',')[0] : realIp;
+    const gamingId = cookies().get('gaming_id')?.value;
     
-    // Fingerprint check is now handled by checkAndBlockFingerprint
-    if (!ip) {
+    // Fingerprint check is handled by checkAndBlockFingerprint
+    if (!ip && !gamingId) {
       return { isBlocked: false, reason: null };
     }
 
     const db = await connectToDatabase();
     
+    const queryConditions = [];
+    if (ip) {
+      queryConditions.push({ type: 'ip', value: ip });
+    }
+    if (gamingId) {
+      queryConditions.push({ type: 'id', value: gamingId });
+    }
+
     const block = await db.collection<BlockedIdentifier>('blocked_identifiers').findOne({
-      type: 'ip', value: ip
+      $or: queryConditions
     });
+
 
     if (block) {
       return { isBlocked: true, reason: block.reason };
@@ -57,7 +67,7 @@ export async function checkBlockStatus(): Promise<{ isBlocked: boolean; reason: 
 
     return { isBlocked: false, reason: null };
   } catch (error) {
-    console.error('Error checking IP block status:', error);
+    console.error('Error checking block status:', error);
     // Fail open: if the check fails, don't block the user.
     return { isBlocked: false, reason: null };
   }

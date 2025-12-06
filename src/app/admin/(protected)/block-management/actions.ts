@@ -10,7 +10,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { ObjectId } from 'mongodb';
 
 const blockSchema = z.object({
-  type: z.enum(['ip', 'fingerprint']),
+  type: z.enum(['ip', 'fingerprint', 'id']),
   value: z.string().min(1, 'Value is required.'),
   reason: z.string().min(1, 'A reason is required to block.'),
 });
@@ -34,7 +34,7 @@ export async function addBlock(formData: FormData): Promise<{ success: boolean; 
     
     const existingBlock = await db.collection<BlockedIdentifier>('blocked_identifiers').findOne({ value });
     if (existingBlock) {
-        return { success: false, message: 'This IP or Fingerprint is already blocked.' };
+        return { success: false, message: 'This IP, Fingerprint, or ID is already blocked.' };
     }
 
     const newBlock: Omit<BlockedIdentifier, '_id'> = {
