@@ -23,6 +23,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import BannedNotice from '@/components/banned-notice';
 import { useToast } from '@/hooks/use-toast';
 import Script from 'next/script';
+import MetaPixelPurchaseTracker from '@/components/meta-pixel-purchase-tracker';
 
 
 const FCM_TOKEN_KEY = 'fcm_token';
@@ -313,6 +314,7 @@ export default function RootLayout({
             banMessage={bannedInfo?.message || ''}
           />
         </RefreshProvider>
+        {user && <MetaPixelPurchaseTracker user={user} />}
       </body>
     </html>
   );
