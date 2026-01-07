@@ -39,7 +39,7 @@ const HighlightedId = ({ oldId, newId }: { oldId: string, newId: string }) => {
     <span className="font-mono font-bold text-primary">
       {newIdChars.map((char, index) => {
         if (char !== oldIdChars[index]) {
-          return <span key={index} className="text-destructive animate-pulse">{char}</span>;
+          return <span key={index} className="text-blue-600">{char}</span>;
         }
         return <span key={index}>{char}</span>;
       })}
