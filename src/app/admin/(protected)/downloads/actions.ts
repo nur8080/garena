@@ -17,7 +17,6 @@ export async function getAllAiLogsForDownload(): Promise<{ success: boolean; mes
         const db = await connectToDatabase();
         const logs = await db.collection<AiLog>('ai_logs')
             .find({})
-            .sort({ createdAt: -1 }) // Newest first
             .toArray();
 
         return { success: true, data: JSON.parse(JSON.stringify(logs)) };
