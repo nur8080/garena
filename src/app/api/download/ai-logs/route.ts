@@ -4,11 +4,6 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { isAdminAuthenticated } from '@/app/actions';
 import { AiLog } from '@/lib/definitions';
 
-// This increases the timeout for this specific API route.
-// Vercel's default is short (e.g., 15s), which can cut off long-running streams.
-// This gives it up to 5 minutes to complete the download.
-export const maxDuration = 300;
-
 // Helper to create a small delay, can help prevent event loop blocking on huge datasets.
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
